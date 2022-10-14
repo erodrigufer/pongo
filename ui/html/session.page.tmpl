@@ -1,0 +1,18 @@
+{{template "base" .}}
+
+{{define "body"}}
+	<h2>Session</h2>
+	<ul>
+		<li> Username: {{.Username}}</li>	
+		<li> Password: {{.Password}}</li>
+	</ul>
+	<p> Establish an SSH connection with the server by running the following command and giving the password when prompted for it:  </p>
+	<div class="flash access-data">
+		<p>ssh {{.Username}}@{{.OutboundIP}} -p {{.Port}} </p>
+	</div>
+	<h2>Notice</h2>
+	<ul>
+		<li> If your SSH connection is dropped before being asked to write the password, it is quite possible that the session that you are using has already <em>expired</em>. Therefore, simply create a new session and try to establish an SSH connection with the new session.</li>
+		<li> If you refresh this page (therefore asking the system for a new session) and a minimum amount of time between the creation of sessions has not passed, the session generator will not send you a new session.</li>
+	</ul>
+{{end}}

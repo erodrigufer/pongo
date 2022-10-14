@@ -1,0 +1,164 @@
+:root{
+	/* --main-bg-color: #F1F3F6; /1* very light grey *1/ */
+	--main-bg-color: white; 
+	/* --main-text-color: #34495E; /1* blueish grey *1/ */
+	--main-text-color: rgb(57,57,70); /* blueish grey */
+	--header-bg-color: #f7faff; /* very light grey */
+	--flash-border-color: #333; /* dark grey */
+	--flash-rounded-corners: 0.75rem; /* size of rounded corners */
+	--flash-paragraph-padding: 1.1rem;
+	--button-text-color: white;
+	--button-bg-color: #2597F4; /* blue */
+	--button-hover-bg-color: #085391; /* darker blue */
+	--button-active-bg-color: #042A49; /* very dark blue */
+	--unhealthy-bg-color: #FF0000; /* red */
+	--unhealthy-text-color: #FFFFFF; /* white */
+	--healthy-bg-color:#0FFF00; /* green */
+	--infobox-healthchecks-bg-color: #ccdfff;
+	--warning-bg-color:rgb(255, 246, 130);
+	--anchor-font-color:#105AC1; /* blue */
+	/* --anchor-active-font-color:rgb(); */
+}
+
+* {
+    font-size: 16px;
+	line-height: 24px;
+	font-family: inter, sans-serif;
+}
+
+header {
+	background: var(--header-bg-color);
+	padding-top: 1rem;
+	padding-bottom: 2rem;
+	padding-left: 1.25rem;
+	margin-bottom: 1rem;
+}
+
+h1 a {
+    color: var(--main-text-color);
+	font-size: 1.75rem;
+	font-weight: 500; /* taken from Grafana docs style */
+}
+
+header a {
+	text-decoration: none;
+}
+
+h2 {
+	font-size: 1.25rem;
+	margin-bottom: 1.75rem;
+}
+
+body {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+
+	/* Unitless values: use this number multiplied
+	 * by the element's font size */
+    line-height: 1;
+}
+
+main {
+	margin: 2rem;
+}
+
+p {
+	/* Make paragraphs more legible. */
+	line-height: 1.3;
+	margin-bottom: 1rem;
+}
+
+li {
+	/* Make list items more legible. */
+	line-height: 1.3;
+	margin-bottom: 1rem;
+}
+
+a {
+	color: var(--anchor-font-color);
+	padding: 0.2rem;	
+	text-decoration: underline;
+}
+
+/* A link that has a destination. */
+a:link {
+	/* background: #e7bcb1; */
+}
+
+/* Link that has already been visited. */
+a:visited {
+
+}
+
+a:focus {
+
+}
+
+a:hover {
+	/* color: var(--anchor-hover-font-color); */
+	/* background: var(--anchor-hover-bg-color); */
+	/* padding: 0.2rem; */
+}
+
+/* A link that is being clicked on. */
+a:active {
+	/* color: var(--anchor-active-font-color); */
+	/* background: var(--anchor-active-bg-color); */
+}
+
+/* Button to generate session at main page. */ 
+button {
+	border: none; /* Remove borders. */
+	color: var(--button-text-color);
+	background: var(--button-bg-color);
+	padding: 1.5rem;
+}
+/* Change color of button when hovering over it. */
+button:hover{
+	background: var(--button-hover-bg-color);
+}
+/* Change bg color when button is being pressed. */
+button:active{
+	background: var(--button-active-bg-color);
+}
+
+/* id contains all visible elements. */ 
+#all-content{
+	margin: 0 auto 0 auto;
+	/* IMPORTANT: Use max-width, instead of width, so that the width of the */ 
+	/* element can also shrink if the window size changes. */
+	max-width: 50rem;
+}
+
+/* Container for ssh connection code. */
+.access-data {
+	background-color: lavenderblush;
+}
+
+.warning {
+	background-color: var(--warning-bg-color);
+}
+
+.flash p {
+	padding: var(--flash-paragraph-padding);
+}
+
+/* Infobox with description and timestamp of health checks. */
+.infobox-healthchecks {
+	background-color: var(--infobox-healthchecks-bg-color);
+	margin-left: 1.3rem;
+	padding: 1rem;
+}
+
+.healthy {
+	background-color: var(--healthy-bg-color);
+}
+
+.unhealthy {
+	background-color: var(--unhealthy-bg-color); 
+	color: var(--unhealthy-text-color);
+}
+
+footer {
+	margin-top: 2rem;
+}

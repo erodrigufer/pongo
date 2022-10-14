@@ -1,0 +1,6 @@
+basic_auth_users:
+  # admin: $2b$12$hNf2lSsxfm0.i4a.1kVpSOVyBCfIB51VRjgBUyv6kdnyTlgWj81Ay
+  # test
+  prometheusIOTSEC: $2y$14$EF0sz8z5E6vg7yIOoNK47.wZbf45HdWRzo1Po8lVdckamkgq97hbe
+  # 7SmbLhbDY19S04kgtCyh1nCua
+

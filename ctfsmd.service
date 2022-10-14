@@ -1,0 +1,14 @@
+[Unit]
+Description=CTF Session Manager Daemon
+After=network.target
+DefaultDependencies=yes
+FailureAction=none
+
+[Service]
+User=root
+WorkingDirectory=/usr/local/bin/ctfsmd/
+ExecStart=/usr/local/bin/ctfsmd/ctfsmd
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

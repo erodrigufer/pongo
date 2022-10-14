@@ -1,0 +1,25 @@
+{{template "base" .}}
+
+{{define "body"}}
+	<h2> Health checks </h2>
+	<ul>
+	{{range .HealthCheckResults}}
+		<li><h3> {{.Name}} </h3></li>
+		<!-- Show banner with color showing health status. -->
+		{{if .Pass}}
+			<div class="healthy flash">
+				<p>[HEALTHY] {{.Name}} </p>
+			</div>
+		{{else}}
+			<div class="unhealthy flash">
+				<p>[UNHEALTHY] {{.Name}}: {{.Diagnostics}}</p>
+			</div>
+		{{end}}
+		<div class="infobox-healthchecks">
+		<p> Description of health check: {{.Description}} </p>
+		<p> {{.Timestamp.Format "Jan 02, 2006 15:04:05 CET" }} </p>	
+		</div>
+		
+	{{end}}
+	</ul>
+{{end}}

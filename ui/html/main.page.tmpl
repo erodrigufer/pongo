@@ -1,0 +1,15 @@
+{{template "base" .}}
+
+{{define "body"}}
+	<h2>Instructions</h2>
+		<p>In order to perform the CTF challenges that require connecting to a server with SSH you must first generate a session. The session will only be available for {{.LifetimeSess}} minutes after you activate it (after you receive your session authentication information: username and password). Do not attack the infrastructure that generates the sessions. </p>
+
+	<ul>
+		<li> Press the button below to generate a new session. </li>
+		<li> Use the username and password to connect to the SSH service where the CTF challenges are hosted.</li>
+		<li> {{.LifetimeSess}} minutes after you get the authentication details of a session (username and password) the session expires. All files created or changed during the expired session are now irreversibly gone. If you want to get a new session come back to this page and request a new session.</li>
+	</ul>
+		<form action='/session' method='GET'>
+			<button>Generate a new session</button>
+		</form>
+{{end}}
