@@ -212,6 +212,7 @@ func (app *application) addDefaultData(td *templateData) *templateData {
 		td = &templateData{}
 	}
 	td.CurrentYear = time.Now().Year()
+	td.BuildRev = app.buildRev
 
 	// Lifetime of a session in minutes.
 	td.LifetimeSess = app.configurations.lifetimeSess

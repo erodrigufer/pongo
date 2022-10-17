@@ -68,6 +68,11 @@ p {
 	margin-bottom: 1rem;
 }
 
+footer p {
+	margin-bottom: 0.4rem;
+	line-height: 1.1;
+}
+
 li {
 	/* Make list items more legible. */
 	line-height: 1.3;

@@ -56,6 +56,7 @@ func (app *application) setupApplication() error {
 	app.infoLog.Print("ctfsmd -CTF session manager daemon- is initializing.")
 	buildRev, err := semver.GetRevision()
 	if err == nil {
+		app.buildRev = buildRev
 		app.infoLog.Printf("ctfsmd revision: %s", buildRev)
 	}
 

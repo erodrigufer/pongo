@@ -23,6 +23,8 @@ type application struct {
 	// debugLog, debug log handler. Activated only for debugging. Logging
 	// activity will therefore be more frequent.
 	debugLog *log.Logger
+	// buildRev, hash of last commit from which executable was built.
+	buildRev string
 	// srv, is the HTTP server that handles clients' requests for sessions.
 	srv *http.Server
 	// client, is the client that communicates with the Docker daemon.

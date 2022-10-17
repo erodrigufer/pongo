@@ -11,6 +11,9 @@ import (
 type templateData struct {
 	// CurrentYear, displays the current year in the footer of the page.
 	CurrentYear int
+	// BuildRev, revision from which executable was built. If revision is
+	// unavailable, BuildRev equals "".
+	BuildRev string
 	// Username, of an SSH session.
 	Username string
 	// Password, of an SSH session.
