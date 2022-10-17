@@ -12,6 +12,7 @@ import (
 
 	"github.com/docker/docker/client"
 	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
+	semver "github.com/erodrigufer/go-semver"
 )
 
 // charsetUsername, valid character-set for generating random usernames.
@@ -50,8 +51,15 @@ func (app *application) setupApplication() error {
 		app.debugLog = log.New(io.Discard, "DEBUG\t", log.Ldate|log.Ltime|log.Lshortfile)
 	}
 
+	// Print daemon initialization log, including build revision (if possible).
+	app.infoLog.Print("----------------------------------------------------")
+	app.infoLog.Print("ctfsmd -CTF session manager daemon- is initializing.")
+	buildRev, err := semver.GetRevision()
+	if err == nil {
+		app.infoLog.Printf("ctfsmd revision: %s", buildRev)
+	}
+
 	// Initialize Docker daemon client.
-	var err error
 	app.client, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		return err
