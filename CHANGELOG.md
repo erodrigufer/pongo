@@ -1,3 +1,7 @@
+## v0.0.3
+* Remove old containers' references from the code's data model.
+* Refactor SSH Piper reverse proxy code to `reverseProxy.go`.
+
 ## v0.0.2
 * Display revision also in the webpage.
 
