@@ -11,7 +11,7 @@ import (
 // the SSH Piper container in the host system. This filesystem will be mounted
 // as a persistent volume into the SSH Piper container afterwards.
 func (app *application) configurePiperFilesystem() error {
-	// Remove the existant directory in the host machine with the SSH Piper
+	// Remove the existent directory in the host machine with the SSH Piper
 	// persistent data, and all its subdirectories. If the path does not exist,
 	// os.RemoveAll() returns nil.
 	// WARNING: This step will permanently remove any existing data from
@@ -41,7 +41,8 @@ func (app *application) configurePiperFilesystem() error {
 // initializeReverseProxy, starts the reverse proxy SSH Piper and does all the
 // required a-priori configuration, like creating a network, configuring the
 // filesystem, etc.
-func (app *application) initializeReverseProxy() (err error) {
+func (app *application) initializeReverseProxy() error {
+	var err error
 	// Create the network for the reverse proxy (SSH Piper) and the upstream
 	// containers.
 	reverseProxyName := "reverseProxy" // Name of the network.
