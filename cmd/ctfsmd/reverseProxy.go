@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 	"time"
+
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/go-connections/nat"
 )
 
 // configurePiperFilesystem, properly configure the filesystem necessary for
@@ -62,6 +65,68 @@ func (app *application) initializeReverseProxy() error {
 	if err = app.createPiperContainer(namePiperContainer); err != nil {
 		return err
 	}
+
+	return nil
+}
+
+// createPiperContainer, creates and runs the container that will act as the SSH
+// reverse proxy. It connects the container to the network with which it
+// interacts with all upstream-containers (app.networkIDreverseProxy).
+// Parameter: name, the name that will be given to the container running SSH
+// Piper.
+func (app *application) createPiperContainer(name string) (err error) {
+	// TODO: first make sure that the image necessary for SSH Piper is already
+	// pulled and built on the system -> farmer1992/sshpiperd
+	sshPiperProxy := new(containerModel)
+	sshPiperProxy.name = name
+	// Container's image name.
+	sshPiperProxy.containerConfig.Image = app.images.sshPiperImage
+	// Set the internal hostname of the container.
+	sshPiperProxy.containerConfig.Hostname = sshPiperProxy.name
+	// Equivalent to --rm flag in Docker CLI, automatically remove container
+	// after stopping it.
+	sshPiperProxy.hostConfig.AutoRemove = true
+	// Expose port 2222/tcp of the SSH Piper container.
+	sshPiperProxy.containerConfig.ExposedPorts = nat.PortSet{nat.Port("2222/tcp"): {}}
+	// Bind host's port (defined through flags) with SSH Piper 2222 port,
+	// this is the port that clients will use to access the upstream-containers
+	// through the SSH reverse proxy.
+	sshPiperProxy.hostConfig.PortBindings = nat.PortMap{
+		nat.Port("2222/tcp"): []nat.PortBinding{{HostIP: "0.0.0.0", HostPort: app.configurations.sshPort}},
+	}
+	// Bind volume to SSH Piper container, for persistent data management.
+	// Bind RSA SSH key of host, so that SSH Piper always works with the same
+	// key, otherwise SSH Piper generates a new key each time, which makes the
+	// client think that the keys have changed for the same IP, which is pretty
+	// bad because the SSH client blocks the connection attempt, in order to
+	// prevent a man-in-the-middle attack.
+	sshPiperProxy.hostConfig.Binds = []string{"/tmp/sshpiper:/var/sshpiper", "/etc/ssh/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key"}
+
+	// Networking configurations for container, so that the SSH piper container
+	// is automatically connected to the SSH reverse proxy network after
+	// initialization, and does not get connected to the 'bridge' network.
+	// Create a struct with the configuration of an endpoint for the new
+	// container.
+	endpointsConfig := new(network.EndpointSettings)
+	// Add the networkID of the reverse proxy network to the endpoint.
+	endpointsConfig.NetworkID = app.networkIDreverseProxy
+	// EndpointsConfig is a map, because it can have the configuration
+	// parameters of multiple endpoints at the same time in the map.
+	endpointsMap := make(map[string]*network.EndpointSettings)
+	endpointsMap[app.networkIDreverseProxy] = endpointsConfig
+	sshPiperProxy.networkConfig.EndpointsConfig = endpointsMap
+
+	// Initialize a pseudo-terminal in the container.
+	// sshPiperProxy.containerConfig.Tty = true
+	// Attach a Stdin to the container to also be able to interact with it.
+	// sshPiperProxy.containerConfig.AttachStdin = true
+
+	// Run the previously configured SSH Piper reverse proxy container.
+	app.sshPiperContainerID, err = app.runContainer(sshPiperProxy)
+	if err != nil {
+		return err
+	}
+	app.infoLog.Printf("SSH piper reverse proxy container was created (ID: %s) on port %s.", app.sshPiperContainerID[:10], app.configurations.sshPort)
 
 	return nil
 }
