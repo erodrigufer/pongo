@@ -171,14 +171,18 @@ func (app *application) createPiperContainer(name string) (err error) {
 	// pulled and built on the system -> farmer1992/sshpiperd
 	sshPiperProxy := new(containerModel)
 	sshPiperProxy.name = name
+	// Container's image name.
 	sshPiperProxy.containerConfig.Image = app.images.sshPiperImage
 	// Set the internal hostname of the container.
 	sshPiperProxy.containerConfig.Hostname = sshPiperProxy.name
-	// Equivalent to --rm flag in Docker CLI.
+	// Equivalent to --rm flag in Docker CLI, automatically remove container
+	// after stopping it.
 	sshPiperProxy.hostConfig.AutoRemove = true
 	// Expose port 2222/tcp of the SSH Piper container.
 	sshPiperProxy.containerConfig.ExposedPorts = nat.PortSet{nat.Port("2222/tcp"): {}}
-	// Bind host's port (defined through flags) with SSH Piper 2222 port.
+	// Bind host's port (defined through flags) with SSH Piper 2222 port,
+	// this is the port that clients will use to access the upstream-containers
+	// through the SSH reverse proxy.
 	sshPiperProxy.hostConfig.PortBindings = nat.PortMap{
 		nat.Port("2222/tcp"): []nat.PortBinding{{HostIP: "0.0.0.0", HostPort: app.configurations.sshPort}},
 	}
@@ -215,12 +219,6 @@ func (app *application) createPiperContainer(name string) (err error) {
 		return err
 	}
 	app.infoLog.Printf("SSH piper reverse proxy container was created (ID: %s) on port %s.", app.sshPiperContainerID[:10], app.configurations.sshPort)
-
-	// Connect newly created container to reverse proxy network.
-	// err = app.containerConnect(app.networkIDreverseProxy, app.sshPiperContainerID)
-	// if err != nil {
-	// 	return err
-	// }
 
 	return nil
 }
