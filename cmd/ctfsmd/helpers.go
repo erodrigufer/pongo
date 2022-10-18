@@ -73,12 +73,7 @@ func (app *application) setupApplication() error {
 	app.images.sshPiperImage = "sshpiperd"
 	// Docker image used to create the entrypoint container.
 	app.images.entrypointImage = "entrypoint"
-	// Docker image used for Linux server.
-	app.images.linuxServerImage = "linux_server"
-	// Docker image used for nginx HTML simple server.
-	app.images.simpleHTMLServerImage = "simple_server"
-	// Docker image used for private server.
-	app.images.privateServerImage = "priv_server"
+
 	// Create a new and unique random seed, which can be used throughout the
 	// application each time that a random string has to be generated.
 	// For more information, check:
@@ -86,7 +81,7 @@ func (app *application) setupApplication() error {
 	app.seededRand = rand.New(
 		rand.NewSource(time.Now().UnixNano()))
 
-	// Initialize the templates cache.
+	// Initialize the HTML templates cache.
 	app.templateCache, err = newTemplateCache("./ui/html/")
 	if err != nil {
 		return err
@@ -114,6 +109,12 @@ func (app *application) setupApplication() error {
 	} else {
 		// Do not expose the Prometheus metrics.
 		app.infoLog.Print("prometheus: Running without exposing instrumentation metrics.")
+		// NoOpsInstrumentation() will fulfill the instrumentation interface,
+		// but it will not require any system resources when it is used in the
+		// different instrumentation methods throughout the codebase. Moreover,
+		// the codebase does not have to implement any kind of logic on the
+		// different places where it wants to perform instrumentation, the
+		// interface decides if it needs to collect data or not.
 		app.instrumentation = prometheus.NoOpsInstrumentation()
 	}
 

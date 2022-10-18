@@ -119,19 +119,9 @@ type images struct {
 	// sshPiperImage, the Docker image used to create the SSH Piper reverse
 	// proxy container (it might be an image hosted in a remote Docker repo).
 	sshPiperImage string
-	// simpleHTMLServerImage, the Docker image used to create an nginx HTML
-	// server hosting a webpage with some SSH keys.
-	simpleHTMLServerImage string
 	// entrypointImage, the Docker image used as the upstream-container from
 	// SSH Piper in which the user initiates his session.
 	entrypointImage string
-	// linuxServerImage, the Docker image of the Linux server to which the
-	// user connects with the username and password found in
-	// simpleHTMLServerImage.
-	linuxServerImage string
-	// privateServerImage, the Docker image of the server connected in a
-	// private network with linuxServerImage.
-	privateServerImage string
 }
 
 // session, stores all the relevant information for a unique session, its
