@@ -6,11 +6,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var deployCmd = &cobra.Command{
-	Use: "deploy",
-	// Aliases: []string{"rev"},
-	Short: "Deploys ctfsmd to the local host.",
+var runCmd = &cobra.Command{
+	Use:   "run",
+	Short: fmt.Sprintf("Runs %s in the local host.", executableName),
+	// Long: "Runs",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Deploying ctfsmd.")
+		fmt.Println("Run ctfsmd.")
 	},
 }

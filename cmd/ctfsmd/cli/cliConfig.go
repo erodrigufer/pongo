@@ -1,6 +1,7 @@
 package cli
 
 func configCLI() {
-	// Add a child command to the root command.
-	rootCmd.AddCommand(deployCmd)
+	// Add all child commands to the root command.
+	rootCmd.AddCommand(runCmd)
+	rootCmd.AddCommand(revisionCmd)
 }
