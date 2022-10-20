@@ -7,9 +7,16 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/erodrigufer/CTForchestrator/cmd/ctfsmd/cli"
 )
 
 func main() {
+
+	cli.Execute()
+
+	os.Exit(0)
+
 	// Initialize object application and perform general configurations.
 	app := new(application)
 	if err := app.setupApplication(); err != nil {
