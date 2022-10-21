@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/subosito/gotenv"
 )
 
 var executableName string = "ctfsmd"
@@ -24,6 +25,14 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	if err := gotenv.Load(); err != nil {
+		// TODO: handle the error case for gotenv (no file and so on) properly.
+		// gotenv returns an error, when there is no .env file, or when the
+		// env. variables are poorly defined, e.g.
+		// 'CTFSMD_NOINTRUMENTATION true', here the '=' is missing.
+		fmt.Println("error", err)
+	}
+	// error: open .env-is-not-exist: no such file or directory
 	// Configures the CLI, e.g. define all the children commands to the
 	// root command.
 	configCLI()
