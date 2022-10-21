@@ -29,7 +29,7 @@ func Execute() {
 	configCLI()
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "There was an error while executing the CLI of ctfsmd: %v", err)
+		fmt.Fprintf(os.Stderr, "There was an error while executing the CLI of ctfsmd: %v\n", err)
 		os.Exit(1)
 	}
 }
