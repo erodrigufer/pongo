@@ -11,10 +11,9 @@ func configCLI() {
 }
 
 func configureViper() {
-	// TODO: use the variable that defines the executable's name to change
-	// this value.
-	// Set prefix for all env. variables, e.g. 'CTFSMD_NOINSTRUMENTATION'
-	viper.SetEnvPrefix("ctfsmd") // This will automatically be
+	// Set prefix for all env. variables, e.g. 'CTFSMD_NOINSTRUMENTATION', the
+	// prefix for all env. variables is thereafter 'CTFSMD'.
+	viper.SetEnvPrefix(executableName) // This will automatically be
 	// uppercased by viper.
 
 }
