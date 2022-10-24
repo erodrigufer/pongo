@@ -26,6 +26,9 @@ var runCmd = &cobra.Command{
 	},
 }
 
+// configureRunCmd, configures the flags and environment variables used by the
+// run command, sets its defaults and adds the run command as a child command
+// of root command.
 func configureRunCmd(parentCmd *cobra.Command) {
 	viper.SetDefault("NoInstrumentation", false)
 	// Add local flag to check if application should run with or without

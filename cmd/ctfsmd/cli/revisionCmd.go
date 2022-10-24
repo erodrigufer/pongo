@@ -17,3 +17,9 @@ var revisionCmd = &cobra.Command{
 		fmt.Printf("%s revision: %s\n", executableName, buildRev)
 	},
 }
+
+// configureRevisionCmd, sets all necessary flags and adds the revision command,
+// as a child command of root command.
+func configureRevisionCmd(parentCmd *cobra.Command) {
+	parentCmd.AddCommand(revisionCmd)
+}

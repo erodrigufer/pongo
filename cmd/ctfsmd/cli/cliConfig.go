@@ -7,7 +7,7 @@ import (
 func configCLI() {
 	configureViper()
 	configureRunCmd(rootCmd)
-	rootCmd.AddCommand(revisionCmd)
+	configureRevisionCmd(rootCmd)
 }
 
 func configureViper() {
