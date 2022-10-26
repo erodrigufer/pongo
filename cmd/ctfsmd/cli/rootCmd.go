@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func Execute() {
+func Execute() error {
 	if err := gotenv.Load(); err != nil {
 		// TODO: handle the error case for gotenv (no file and so on) properly.
 		// gotenv returns an error, when there is no .env file, or when the
@@ -35,10 +35,13 @@ func Execute() {
 	// error: open .env-is-not-exist: no such file or directory
 	// Configures the CLI, e.g. define all the children commands to the
 	// root command.
-	configCLI()
+	if err := configCLI(); err != nil {
+		return fmt.Errorf("error configuring CLI: %w", err)
+	}
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "There was an error while executing the CLI of ctfsmd: %v\n", err)
 		os.Exit(1)
 	}
+	return nil
 }

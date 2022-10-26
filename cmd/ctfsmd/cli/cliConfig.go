@@ -1,13 +1,19 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/spf13/viper"
 )
 
-func configCLI() {
+func configCLI() error {
 	configureViper()
-	configureRunCmd(rootCmd)
+	if err := configureRunCmd(rootCmd); err != nil {
+		return fmt.Errorf("error configuring Run command: %w", err)
+	}
 	configureRevisionCmd(rootCmd)
+
+	return nil
 }
 
 func configureViper() {
