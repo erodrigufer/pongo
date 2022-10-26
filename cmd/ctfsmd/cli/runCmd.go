@@ -11,7 +11,7 @@ var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: fmt.Sprintf("Runs %s in the local machine.", executableName),
 	Long:  fmt.Sprintf("Runs %s in the local machine.", executableName),
-	// Command does not accept any positional arguments )no arguments other
+	// Command does not accept any positional arguments, no arguments other
 	// than flags. If any arguments are submitted, the command will return an
 	// error.
 	Args: cobra.NoArgs,
