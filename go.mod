@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/bmizerany/pat v0.0.0-20210406213842-e4b6760bdd6f
-	github.com/docker/docker v20.10.20+incompatible
+	github.com/docker/docker v20.10.21+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/erodrigufer/go-semver v0.1.0
 	github.com/prometheus/client_golang v1.13.0
