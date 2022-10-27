@@ -12,58 +12,62 @@ import (
 // cobra/viper configuration is working properly
 
 func TestExecute(t *testing.T) {
-	tests := []struct {
+	type test struct {
 		subTestName     string
 		args            []string
 		expectedResults map[string]interface{}
-	}{
+	}
+
+	var tests = []test{
 		{
 			subTestName:     "Default values (no flags)",
 			args:            []string{},
 			expectedResults: defaultValues,
 		},
-		{
-			subTestName: "No instrumentation flag",
-			args:        []string{"run", "--no-instrumentation"},
-			expectedResults: map[string]interface{}{
-				"Debug":             false,
-				"NoInstrumentation": true,
-			},
-		},
-		{
-			subTestName: "Debug mode",
-			args:        []string{"run", "--debug"},
-			expectedResults: map[string]interface{}{
-				"Debug":             true,
-				"NoInstrumentation": false,
-			},
-		},
-		{
-			subTestName: "No instrumentation and debug flag",
-			args:        []string{"run", "--no-instrumentation", "--debug"},
-			expectedResults: map[string]interface{}{
-				"Debug":             true,
-				"NoInstrumentation": true,
-			},
-		},
-
-		{
-			subTestName: "SSH Port",
-			args:        []string{"run", "--ssh", "70000"},
-			expectedResults: map[string]interface{}{
-				"SSH":               "70000",
-				"NoInstrumentation": false,
-			},
-		},
-		{
-			subTestName: "Max Available Session",
-			args:        []string{"run", "--maxAvailableSess", "10"},
-			expectedResults: map[string]interface{}{
-				"MaxAvailableSess":  10,
-				"NoInstrumentation": false,
-			},
-		},
 	}
+
+	noInstrumentationMap := defaultValues
+	noInstrumentationMap["NoInstrumentation"] = true
+	tests = append(tests, test{
+		subTestName:     "No instrumentation flag",
+		args:            []string{"run", "--no-instrumentation"},
+		expectedResults: noInstrumentationMap,
+	},
+	)
+	// {
+	// 	subTestName: "Debug mode",
+	// 	args:        []string{"run", "--debug"},
+	// 	expectedResults: map[string]interface{}{
+	// 		"Debug":             true,
+	// 		"NoInstrumentation": false,
+	// 	},
+	// },
+	// {
+	// 	subTestName: "No instrumentation and debug flag",
+	// 	args:        []string{"run", "--no-instrumentation", "--debug"},
+	// 	expectedResults: map[string]interface{}{
+	// 		"Debug":             true,
+	// 		"NoInstrumentation": true,
+	// 	},
+	// },
+
+	// {
+	// 	subTestName: "SSH Port",
+	// 	args:        []string{"run", "--ssh", "70000"},
+	// 	expectedResults: map[string]interface{}{
+	// 		"SSH":               "70000",
+	// 		"NoInstrumentation": false,
+	// 	},
+	// },
+	// {
+	// 	subTestName: "Max Available Session",
+	// 	args:        []string{"run", "--maxAvailableSess", "10"},
+	// 	expectedResults: map[string]interface{}{
+	// 		"MaxAvailableSess":  10,
+	// 		"NoInstrumentation": false,
+	// 	},
+	// },
+	// }
 
 	originalArgs := os.Args
 	// Loop over the test cases.
