@@ -13,55 +13,51 @@ import (
 
 func TestExecute(t *testing.T) {
 	tests := []struct {
-		subTestName string
-		args        []string
-		// varName       string
-		// expectedValue bool
-		expectedResults map[string]bool
+		subTestName     string
+		args            []string
+		expectedResults map[string]interface{}
 	}{
 		{
 			subTestName: "No instrumentation flag",
 			args:        []string{"run", "--no-instrumentation"},
-			expectedResults: map[string]bool{
+			expectedResults: map[string]interface{}{
 				"Debug":             false,
 				"NoInstrumentation": true,
 			},
-			// varName:       "NoInstrumentation",
-			// expectedValue: true,
 		},
 		{
 			subTestName: "Debug mode",
 			args:        []string{"run", "--debug"},
-			expectedResults: map[string]bool{
+			expectedResults: map[string]interface{}{
 				"Debug":             true,
 				"NoInstrumentation": false,
 			},
-			// varName:       "Debug",
-			// expectedValue: true,
 		},
 		{
 			subTestName: "No instrumentation and debug flag",
 			args:        []string{"run", "--no-instrumentation", "--debug"},
-			expectedResults: map[string]bool{
+			expectedResults: map[string]interface{}{
 				"Debug":             true,
 				"NoInstrumentation": true,
 			},
-			// varName:       "NoInstrumentation",
-			// expectedValue: true,
 		},
 
-		// {
-		// 	subTestName:   "SSH Port",
-		// 	args:          []string{"run", "--ssh", "70000"},
-		// 	varName:       "SSH",
-		// 	expectedValue: "70000",
-		// },
-		// {
-		// 	subTestName:   "Max Available Session",
-		// 	args:          []string{"run", "--maxAvailableSess", "10"},
-		// 	varName:       "MaxAvailableSess",
-		// 	expectedValue: 11,
-		// },
+		{
+			subTestName: "SSH Port",
+			args:        []string{"run", "--ssh", "70000"},
+			expectedResults: map[string]interface{}{
+				"SSH":               "70000",
+				"NoInstrumentation": false,
+			},
+		},
+		{
+			subTestName: "Max Available Session",
+			args:        []string{"run", "--maxAvailableSess", "10"},
+			expectedResults: map[string]interface{}{
+				"MaxAvailableSess":  10,
+				"NoInstrumentation": false,
+			},
+		},
 	}
 
 	originalArgs := os.Args
@@ -89,8 +85,8 @@ func TestExecute(t *testing.T) {
 				t.Errorf("error: %v", err)
 			}
 			for key, expectedResult := range tt.expectedResults {
-				if viper.Get(key) != expectedResult {
-					t.Errorf("/%s/ is not equal to expected value /%v/.", key, expectedResult)
+				if viperData := viper.Get(key); viperData != expectedResult {
+					t.Errorf("/%s/(=/%v/) is not equal to expected value /%v/.", key, viperData, expectedResult)
 				}
 			}
 		})
