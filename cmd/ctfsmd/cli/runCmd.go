@@ -19,9 +19,15 @@ var runCmd = &cobra.Command{
 		fmt.Println("Run ctfsmd.")
 		noInstrumentation := viper.GetBool("NoInstrumentation")
 		if noInstrumentation {
-			fmt.Println("Running without instrumentation.")
+			fmt.Println("NO Instrumentation.")
 		} else {
-			fmt.Println("Running with instrumentation.")
+			fmt.Println("Instrumentation.")
+		}
+		debug := viper.GetBool("Debug")
+		if debug {
+			fmt.Println("Debug mode.")
+		} else {
+			fmt.Println("NO Debug mode.")
 		}
 	},
 }

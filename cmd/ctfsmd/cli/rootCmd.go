@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/subosito/gotenv"
@@ -40,8 +39,7 @@ func Execute() error {
 	}
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "There was an error while executing the CLI of ctfsmd: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("error while executing the CLI of %s: %w", executableName, err)
 	}
 	return nil
 }
