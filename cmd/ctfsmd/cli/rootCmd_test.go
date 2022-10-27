@@ -21,7 +21,7 @@ func TestExecute(t *testing.T) {
 	var tests = []test{
 		{
 			subTestName:     "Default values (no flags)",
-			args:            []string{},
+			args:            []string{}, // Do not provide any flags.
 			expectedResults: defaultValues,
 		},
 	}
