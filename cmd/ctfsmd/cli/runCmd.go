@@ -7,6 +7,21 @@ import (
 	"github.com/spf13/viper"
 )
 
+// defaultValues, default values used by viper for the different keys.
+// If a user does not set a key with either a flag or an env. variable, the
+// value for that key will default to the value defined in this map.
+var defaultValues = map[string]interface{}{
+	"NoInstrumentation": false,
+	"SSH":               "50000",
+	"HTTP":              ":4000",
+	"MaxAvailableSess":  15,
+	"MaxActiveSess":     140,
+	"LifetimeSess":      150,
+	"SRDFreq":           10,
+	"TimeReq":           5,
+	"Debug":             false,
+}
+
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: fmt.Sprintf("Runs %s in the local machine.", executableName),
@@ -55,15 +70,9 @@ func configureRunCmd(parentCmd *cobra.Command) error {
 // setDefaultsRunCmd, set the default values for all configuration parameters
 // handled by viper.
 func setDefaultsRunCmd() {
-	viper.SetDefault("NoInstrumentation", false)
-	viper.SetDefault("SSH", "50000")
-	viper.SetDefault("HTTP", ":4000")
-	viper.SetDefault("MaxAvailableSess", 15)
-	viper.SetDefault("MaxActiveSess", 140)
-	viper.SetDefault("LifetimeSess", 150)
-	viper.SetDefault("SRDFreq", 10)
-	viper.SetDefault("TimeReq", 5)
-	viper.SetDefault("Debug", false)
+	for key, value := range defaultValues {
+		viper.SetDefault(key, value)
+	}
 }
 
 // configureFlagsRunCmd, configure the flags used by the Run command. Bind all

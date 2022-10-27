@@ -18,6 +18,11 @@ func TestExecute(t *testing.T) {
 		expectedResults map[string]interface{}
 	}{
 		{
+			subTestName:     "Default values (no flags)",
+			args:            []string{},
+			expectedResults: defaultValues,
+		},
+		{
 			subTestName: "No instrumentation flag",
 			args:        []string{"run", "--no-instrumentation"},
 			expectedResults: map[string]interface{}{
