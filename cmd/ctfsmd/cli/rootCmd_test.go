@@ -40,7 +40,6 @@ func appendTestExecute(name string, args []string, expectedKeys map[string]inter
 		}
 		// Change the value from the default values. To the expected value.
 		dv[key] = value
-		fmt.Printf("%v\n", dv[key])
 	}
 	newTest := testExecute{
 		subTestName:     name,
@@ -62,31 +61,66 @@ func TestExecute(t *testing.T) {
 	}
 
 	var err error
-	tests, err = appendTestExecute("No instrumentation flag", []string{"run", "--no-instrumentation"}, map[string]interface{}{"NoInstrumentation": false}, tests)
+	tests, err = appendTestExecute(
+		"No instrumentation flag",
+		[]string{"run", "--no-instrumentation"},
+		map[string]interface{}{"NoInstrumentation": true},
+		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
 	}
 
-	tests, err = appendTestExecute("Debug mode", []string{"run", "--debug"}, map[string]interface{}{"Debug": false}, tests)
+	tests, err = appendTestExecute(
+		"Debug mode",
+		[]string{"run", "--debug"},
+		map[string]interface{}{"Debug": true},
+		tests)
 	if err != nil {
 		// If there was an error appending a test run a Fatal() method, so that
 		// no further subtests get executed, until all subtests are properly
 		// defined.
 		t.Fatalf("error appending test: %v", err)
 	}
-	tests, err = appendTestExecute("No instrumentation and debug flag", []string{"run", "--debug", "--no-instrumentation"}, map[string]interface{}{"Debug": true, "NoInstrumentation": true}, tests)
+	tests, err = appendTestExecute(
+		"No instrumentation and debug flag",
+		[]string{"run", "--debug", "--no-instrumentation"},
+		map[string]interface{}{
+			"Debug":             true,
+			"NoInstrumentation": true},
+		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
 	}
-	tests, err = appendTestExecute("SSH Port and no instrumentation", []string{"run", "--ssh", "800", "--no-instrumentation"}, map[string]interface{}{"SSH": "800", "NoInstrumentation": true}, tests)
+	tests, err = appendTestExecute(
+		"SSH Port and no instrumentation",
+		[]string{"run", "--ssh", "800", "--no-instrumentation"},
+		map[string]interface{}{
+			"SSH":               "800",
+			"NoInstrumentation": true},
+		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
 	}
-	tests, err = appendTestExecute("Sessions flags", []string{"run", "--maxAvailableSess", "44", "--maxActiveSess", "213"}, map[string]interface{}{"MaxAvailableSess": 44, "MaxActiveSess": 213}, tests)
+	tests, err = appendTestExecute(
+		"Sessions flags",
+		[]string{"run", "--maxAvailableSess", "44", "--maxActiveSess", "213"},
+		map[string]interface{}{
+			"MaxAvailableSess": 44,
+			"MaxActiveSess":    213},
+		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
 	}
-	tests, err = appendTestExecute("Time requests, expiration of sessions, HTTP and Debug flags.", []string{"run", "--lifetimeSess", "2", "--srdFreq", "16", "--timeReq", "40", "--http", ":88", "--debug"}, map[string]interface{}{"LifetimeSess": 2, "SRDFreq": 16, "TimeReq": 40, "HTTP": ":88", "Debug": true}, tests)
+	tests, err = appendTestExecute(
+		"Time requests, expiration of sessions, HTTP and Debug flags.",
+		[]string{"run", "--lifetimeSess", "2", "--srdFreq", "16", "--timeReq", "40", "--http", ":88", "--debug"},
+		map[string]interface{}{
+			"LifetimeSess": 2,
+			"SRDFreq":      16,
+			"TimeReq":      40,
+			"HTTP":         ":88",
+			"Debug":        true},
+		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
 	}
@@ -118,8 +152,6 @@ func TestExecute(t *testing.T) {
 			for key, expectedResult := range tt.expectedResults {
 				if viperData := viper.Get(key); viperData != expectedResult {
 					t.Errorf("/%s/(=/%v/) is not equal to expected value /%v/.", key, viperData, expectedResult)
-				} else {
-					t.Logf("viperData=%v // expectedResult=%v", viperData, expectedResult)
 				}
 			}
 		})
