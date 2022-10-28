@@ -139,33 +139,56 @@ func TestExecute(t *testing.T) {
 	// strings and the equality test fails because they have different types,
 	// e.g. bool and string. The test works for the SSH value, since the actual
 	// value is also a string.
-	tests, err = appendTestExecute(
-		"No Instrumentation with env. and debug with flag.",
-		[]string{"run", "--debug"},
-		map[string]interface{}{
-			"NoInstrumentation": true,
-			"Debug":             true},
-		map[string]interface{}{"CTFSMD_NOINSTRUMENTATION": "true"},
-		tests)
-	if err != nil {
-		t.Fatalf("error appending test: %v", err)
-	}
-	tests, err = appendTestExecute(
-		"TimeReq. with env.",
-		[]string{"run"},
-		map[string]interface{}{
-			"TimeReq": 77},
-		map[string]interface{}{"CTFSMD_TIMEREQ": "77"},
-		tests)
-	if err != nil {
-		t.Fatalf("error appending test: %v", err)
-	}
+	// tests, err = appendTestExecute(
+	// 	"No Instrumentation with env. and debug with flag.",
+	// 	[]string{"run", "--debug"},
+	// 	map[string]interface{}{
+	// 		"NoInstrumentation": true,
+	// 		"Debug":             true},
+	// 	map[string]interface{}{"CTFSMD_NOINSTRUMENTATION": "true"},
+	// 	tests)
+	// if err != nil {
+	// 	t.Fatalf("error appending test: %v", err)
+	// }
+	// tests, err = appendTestExecute(
+	// 	"TimeReq. with env.",
+	// 	[]string{"run"},
+	// 	map[string]interface{}{
+	// 		"TimeReq": 77},
+	// 	map[string]interface{}{"CTFSMD_TIMEREQ": "77"},
+	// 	tests)
+	// if err != nil {
+	// 	t.Fatalf("error appending test: %v", err)
+	// }
 	tests, err = appendTestExecute(
 		"SSH with env.",
 		[]string{"run"},
 		map[string]interface{}{
 			"SSH": "5"},
 		map[string]interface{}{"CTFSMD_SSH": "5"},
+		tests)
+	if err != nil {
+		t.Fatalf("error appending test: %v", err)
+	}
+	tests, err = appendTestExecute(
+		"HTTP with env.",
+		[]string{"run"},
+		map[string]interface{}{
+			"HTTP": ":78"},
+		map[string]interface{}{"CTFSMD_HTTP": ":78"},
+		tests)
+	if err != nil {
+		t.Fatalf("error appending test: %v", err)
+	}
+	tests, err = appendTestExecute(
+		"HTTP with env. and flag, SSH with env.",
+		[]string{"run", "--http", ":88"},
+		map[string]interface{}{
+			"HTTP": ":88",
+			"SSH":  "1"},
+		map[string]interface{}{
+			"CTFSMD_HTTP": ":78",
+			"CTFSMD_SSH":  "1"},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
