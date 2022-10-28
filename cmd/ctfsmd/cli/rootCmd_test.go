@@ -180,6 +180,8 @@ func TestExecute(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
 	}
+	// In this subtest the HTTP value should be the one of the flag, and not the
+	// one of the env. variable.
 	tests, err = appendTestExecute(
 		"HTTP with env. and flag, SSH with env.",
 		[]string{"run", "--http", ":88"},
