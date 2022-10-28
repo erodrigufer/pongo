@@ -31,19 +31,6 @@ var runCmd = &cobra.Command{
 	// error.
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Run ctfsmd.")
-		noInstrumentation := viper.GetBool("NoInstrumentation")
-		if noInstrumentation {
-			fmt.Println("NO Instrumentation.")
-		} else {
-			fmt.Println("Instrumentation.")
-		}
-		debug := viper.GetBool("Debug")
-		if debug {
-			fmt.Println("Debug mode.")
-		} else {
-			fmt.Println("NO Debug mode.")
-		}
 	},
 }
 
