@@ -29,7 +29,7 @@ func Execute() error {
 		// gotenv returns an error, when there is no .env file, or when the
 		// env. variables are poorly defined, e.g.
 		// 'CTFSMD_NOINTRUMENTATION true', here the '=' is missing.
-		fmt.Println("error", err)
+		fmt.Printf("error loading env. variables: %v\n", err)
 	}
 	// error: open .env-is-not-exist: no such file or directory
 	// Configures the CLI, e.g. define all the children commands to the

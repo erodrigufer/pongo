@@ -14,6 +14,7 @@ import (
 type testExecute struct {
 	subTestName     string
 	args            []string
+	envVariables    map[string]interface{}
 	expectedResults map[string]interface{}
 }
 
@@ -21,7 +22,7 @@ type testExecute struct {
 // function.
 // This function guarantees that only the expectedKeys get changed and the rest
 // of the default values map is used to test the validity of a test.
-func appendTestExecute(name string, args []string, expectedKeys map[string]interface{}, tests []testExecute) ([]testExecute, error) {
+func appendTestExecute(name string, args []string, expectedKeys map[string]interface{}, envVariables map[string]interface{}, tests []testExecute) ([]testExecute, error) {
 	// Use the default values as the basis to change only the expectedKeys.
 	dv := make(map[string]interface{})
 	// Do a deep-copy of the defaultValues map.
@@ -45,6 +46,7 @@ func appendTestExecute(name string, args []string, expectedKeys map[string]inter
 		subTestName:     name,
 		args:            args,
 		expectedResults: dv,
+		envVariables:    envVariables,
 	}
 	tests = append(tests, newTest)
 	return tests, nil
@@ -53,10 +55,11 @@ func appendTestExecute(name string, args []string, expectedKeys map[string]inter
 func TestExecute(t *testing.T) {
 	var tests = []testExecute{
 		{
-			subTestName:     "Default values (no flags)",
-			args:            []string{},    // Do not provide any flags.
-			expectedResults: defaultValues, // The viper values should be the
+			subTestName:     "Default values (no flags, no env.)",
+			args:            []string{"run"}, // Do not provide any flags.
+			expectedResults: defaultValues,   // The viper values should be the
 			// same as the previously defined default values map.
+			envVariables: map[string]interface{}{},
 		},
 	}
 
@@ -65,6 +68,7 @@ func TestExecute(t *testing.T) {
 		"No instrumentation flag",
 		[]string{"run", "--no-instrumentation"},
 		map[string]interface{}{"NoInstrumentation": true},
+		map[string]interface{}{},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
@@ -74,6 +78,7 @@ func TestExecute(t *testing.T) {
 		"Debug mode",
 		[]string{"run", "--debug"},
 		map[string]interface{}{"Debug": true},
+		map[string]interface{}{},
 		tests)
 	if err != nil {
 		// If there was an error appending a test run a Fatal() method, so that
@@ -87,6 +92,7 @@ func TestExecute(t *testing.T) {
 		map[string]interface{}{
 			"Debug":             true,
 			"NoInstrumentation": true},
+		map[string]interface{}{},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
@@ -97,6 +103,7 @@ func TestExecute(t *testing.T) {
 		map[string]interface{}{
 			"SSH":               "800",
 			"NoInstrumentation": true},
+		map[string]interface{}{},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
@@ -107,6 +114,7 @@ func TestExecute(t *testing.T) {
 		map[string]interface{}{
 			"MaxAvailableSess": 44,
 			"MaxActiveSess":    213},
+		map[string]interface{}{},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
@@ -120,6 +128,44 @@ func TestExecute(t *testing.T) {
 			"TimeReq":      40,
 			"HTTP":         ":88",
 			"Debug":        true},
+		map[string]interface{}{},
+		tests)
+	if err != nil {
+		t.Fatalf("error appending test: %v", err)
+	}
+
+	// TODO: these two net tests fail, because the env. variables are being set
+	// as strings, so when the internal values are Get() from viper they are
+	// strings and the equality test fails because they have different types,
+	// e.g. bool and string. The test works for the SSH value, since the actual
+	// value is also a string.
+	tests, err = appendTestExecute(
+		"No Instrumentation with env. and debug with flag.",
+		[]string{"run", "--debug"},
+		map[string]interface{}{
+			"NoInstrumentation": true,
+			"Debug":             true},
+		map[string]interface{}{"CTFSMD_NOINSTRUMENTATION": "true"},
+		tests)
+	if err != nil {
+		t.Fatalf("error appending test: %v", err)
+	}
+	tests, err = appendTestExecute(
+		"TimeReq. with env.",
+		[]string{"run"},
+		map[string]interface{}{
+			"TimeReq": 77},
+		map[string]interface{}{"CTFSMD_TIMEREQ": "77"},
+		tests)
+	if err != nil {
+		t.Fatalf("error appending test: %v", err)
+	}
+	tests, err = appendTestExecute(
+		"SSH with env.",
+		[]string{"run"},
+		map[string]interface{}{
+			"SSH": "5"},
+		map[string]interface{}{"CTFSMD_SSH": "5"},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
@@ -131,7 +177,13 @@ func TestExecute(t *testing.T) {
 	// Loop over the test cases.
 	for _, tt := range tests {
 		t.Run(tt.subTestName, func(t *testing.T) {
-
+			// Reset/clear the environment before every subtest.
+			os.Clearenv()
+			for k, v := range tt.envVariables {
+				if err := os.Setenv(k, v.(string)); err != nil {
+					t.Errorf("error setting env. variable: %v", err)
+				}
+			}
 			// Reset the internal viper key handling data structure so that in
 			// each iteration of the for-loop the keys are not set yet.
 			viper.Reset()
