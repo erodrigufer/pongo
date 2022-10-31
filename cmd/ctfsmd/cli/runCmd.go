@@ -22,25 +22,38 @@ var defaultValues = map[string]interface{}{
 	"Debug":             false,
 }
 
-var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: fmt.Sprintf("Runs %s in the local machine.", executableName),
-	Long:  fmt.Sprintf("Runs %s in the local machine.", executableName),
-	// Command does not accept any positional arguments, no arguments other
-	// than flags. If any arguments are submitted, the command will return an
-	// error.
-	Args: cobra.NoArgs,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
+type Application interface {
+	Run() error
+}
+
+func newRunCmd(app Application) *cobra.Command {
+	runCmd := &cobra.Command{
+		Use:   "run",
+		Short: fmt.Sprintf("Runs %s in the local machine.", executableName),
+		Long:  fmt.Sprintf("Runs %s in the local machine.", executableName),
+		// Command does not accept any positional arguments, no arguments other
+		// than flags. If any arguments are submitted, the command will return an
+		// error.
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := app.Run(); err != nil {
+				return err
+			}
+			return nil
+		},
+	}
+	return runCmd
 }
 
 // configureRunCmd, configures the flags and environment variables used by the
 // run command, sets its defaults and adds the run command as a child command
 // of root command.
-func configureRunCmd(parentCmd *cobra.Command) error {
+func configureRunCmd(parentCmd *cobra.Command, app Application) error {
 	setDefaultsRunCmd()
 
-	if err := configureFlagsRunCmd(); err != nil {
+	runCmd := newRunCmd(app)
+
+	if err := configureFlagsRunCmd(runCmd); err != nil {
 		return fmt.Errorf("error configuring flags for Run command: %w", err)
 	}
 
@@ -64,7 +77,7 @@ func setDefaultsRunCmd() {
 
 // configureFlagsRunCmd, configure the flags used by the Run command. Bind all
 // the flags to their respective keys handled by viper.
-func configureFlagsRunCmd() error {
+func configureFlagsRunCmd(runCmd *cobra.Command) error {
 	// Add local flag to check if application should run with or without
 	// instrumentation. Default behaviour is to run with instrumentation.
 	runCmd.Flags().Bool("no-instrumentation", false, "No instrumentation (Prometheus monitoring) will be performed by the application while running.")

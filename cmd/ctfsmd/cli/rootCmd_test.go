@@ -18,6 +18,14 @@ type testExecute struct {
 	expectedResults map[string]interface{}
 }
 
+type mockApplication struct{}
+
+var mockApp mockApplication
+
+func (mockApplication) Run() error {
+	return nil
+}
+
 // appendTestExecute, appends a subtest to a slice with test for the Execute
 // function.
 // This function guarantees that only the expectedKeys get changed and the rest
@@ -213,13 +221,14 @@ func TestExecute(t *testing.T) {
 			// each iteration of the for-loop the keys are not set yet.
 			viper.Reset()
 			// Reset the flags as well, otherwise the test panics.
-			runCmd.ResetFlags()
+			// TODO: fix issue, before we were resetting runCmd, now tests fail.
+			rootCmd.ResetFlags()
 			os.Args = []string{originalArgs[0]}
 			// Append the arguments with flags specific to a subtest, the first
 			// argument is the name of the executable.
 			os.Args = append(os.Args, tt.args...)
 
-			err := Execute()
+			err := Execute(mockApp)
 			if err != nil {
 				t.Errorf("error: %v", err)
 			}

@@ -6,9 +6,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-func configCLI() error {
+func configCLI(app Application) error {
 	configureViper()
-	if err := configureRunCmd(rootCmd); err != nil {
+	if err := configureRunCmd(rootCmd, app); err != nil {
 		return fmt.Errorf("error configuring Run command: %w", err)
 	}
 	configureRevisionCmd(rootCmd)
