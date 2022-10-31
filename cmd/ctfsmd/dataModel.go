@@ -63,6 +63,8 @@ type application struct {
 	instrumentation prometheus.InstrumentationAPI
 }
 
+// TODO: migrate this data structure to an 'internal' package, so that the 'cli'
+// package can also have access to the configuration struct.
 // userConfiguration, user configurations handled through flags.
 type userConfiguration struct {
 	// debugMode, run the daemon in debug mode. More extensive logging.
