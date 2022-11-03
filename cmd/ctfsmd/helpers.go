@@ -45,7 +45,7 @@ func (app *application) setupApplication() error {
 	// Create a DEBUG messages logger if the -debugMode flag was set, otherwise
 	// discard all logs. Additionally use the Lshortfile flag to
 	// display the file's name and line number for the debug message.
-	if app.configurations.debugMode {
+	if app.configurations.DebugMode {
 		app.debugLog = log.New(os.Stdout, "DEBUG\t", log.Ldate|log.Ltime|log.Lshortfile)
 	} else {
 		app.debugLog = log.New(io.Discard, "DEBUG\t", log.Ldate|log.Ltime|log.Lshortfile)
@@ -100,7 +100,7 @@ func (app *application) setupApplication() error {
 		app.errorLog.Printf("error while configuring the health monitor: %v", err)
 	}
 
-	if !app.configurations.noInstrumentation {
+	if !app.configurations.NoInstrumentation {
 		// Expose the Prometheus metrics.
 		app.instrumentation, err = prometheus.ExposeMetrics(app.infoLog, app.errorLog, "localhost:9999")
 		if err != nil {
@@ -125,19 +125,19 @@ func (app *application) setupApplication() error {
 // parseFlags, parses any flags if they are present.
 func (app *application) parseFlags() {
 	// Debug mode.
-	flag.BoolVar(&app.configurations.debugMode, "debugMode", false, "Run daemon in 'debug' mode. Logging will be more extensive and frequent.")
+	flag.BoolVar(&app.configurations.DebugMode, "debugMode", false, "Run daemon in 'debug' mode. Logging will be more extensive and frequent.")
 	// Parse ports options.
-	flag.StringVar(&app.configurations.sshPort, "sshPort", "50000", "Port in which SSH Piper will work as an SSH proxy. Clients connect to this port.")
-	flag.StringVar(&app.configurations.httpAddr, "httpService", ":4000", "IP and port in which the HTTP webpage will be hosted.")
+	flag.StringVar(&app.configurations.SSHPort, "sshPort", "50000", "Port in which SSH Piper will work as an SSH proxy. Clients connect to this port.")
+	flag.StringVar(&app.configurations.HTTPAddr, "httpService", ":4000", "IP and port in which the HTTP webpage will be hosted.")
 	// Parse number of available and active sessions.
-	flag.IntVar(&app.configurations.maxAvailableSess, "maxAvailableSess", 15, "Number of sessions always running in the background available to be delivered to clients.")
-	flag.IntVar(&app.configurations.maxActiveSess, "maxActiveSess", 140, "Number of sessions that can be simultaneously actively being used by clients.")
+	flag.IntVar(&app.configurations.MaxAvailableSess, "maxAvailableSess", 15, "Number of sessions always running in the background available to be delivered to clients.")
+	flag.IntVar(&app.configurations.MaxActiveSess, "maxActiveSess", 140, "Number of sessions that can be simultaneously actively being used by clients.")
 	// Parse lifetime of sessions and frequency to check for expired sessions.
-	flag.IntVar(&app.configurations.lifetimeSess, "lifetimeSess", 150, "Lifetime of session (in min) after which the session will expire.")
-	flag.IntVar(&app.configurations.srdFreq, "srdFreq", 10, "Frequency (in min) with which srd checks if a session has expired.")
-	flag.IntVar(&app.configurations.timeBetweenRequests, "timeBetweenRequests", 5, "Minimum time (in min) that has to pass between requests from the same IP so that request is not denied.")
+	flag.IntVar(&app.configurations.LifetimeSess, "lifetimeSess", 150, "Lifetime of session (in min) after which the session will expire.")
+	flag.IntVar(&app.configurations.SRDFreq, "srdFreq", 10, "Frequency (in min) with which srd checks if a session has expired.")
+	flag.IntVar(&app.configurations.TimeBetweenRequests, "timeBetweenRequests", 5, "Minimum time (in min) that has to pass between requests from the same IP so that request is not denied.")
 	// Debug mode.
-	flag.BoolVar(&app.configurations.noInstrumentation, "noInstrumentation", false, "If true, no instrumentation will be performed by the application.")
+	flag.BoolVar(&app.configurations.NoInstrumentation, "noInstrumentation", false, "If true, no instrumentation will be performed by the application.")
 	flag.Parse()
 }
 

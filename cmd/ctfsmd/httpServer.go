@@ -22,7 +22,7 @@ func (app *application) declareHTTPServer() {
 	// Use app.errorLog for errors instead of default option.
 	app.srv = &http.Server{
 		// Address where server listens.
-		Addr: app.configurations.httpAddr,
+		Addr: app.configurations.HTTPAddr,
 		// Logger for errors.
 		ErrorLog: app.errorLog,
 		// Handler that receives the client after accept().
@@ -43,7 +43,7 @@ func (app *application) declareHTTPServer() {
 func (app *application) startHTTPServer() {
 	// Configure an HTTP server for the app.
 	app.declareHTTPServer()
-	app.infoLog.Printf("main: Starting web HTTP server at %s.", app.configurations.httpAddr)
+	app.infoLog.Printf("main: Starting web HTTP server at %s.", app.configurations.HTTPAddr)
 	app.infoLog.Print("main: Always verify that your FIREWALL permits traffic from the outside to the HTTP webpage.")
 
 	go func() {
@@ -215,10 +215,10 @@ func (app *application) addDefaultData(td *templateData) *templateData {
 	td.BuildRev = app.buildRev
 
 	// Lifetime of a session in minutes.
-	td.LifetimeSess = app.configurations.lifetimeSess
+	td.LifetimeSess = app.configurations.LifetimeSess
 
 	// SSH reverse proxy port used by the clients.
-	td.Port = app.configurations.sshPort
+	td.Port = app.configurations.SSHPort
 
 	// Outbound IP used by host machine.
 	if app.outboundIP != "" {

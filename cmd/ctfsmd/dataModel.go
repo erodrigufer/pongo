@@ -11,6 +11,7 @@ import (
 
 	"github.com/docker/docker/client"
 	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
+	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
 	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
 )
 
@@ -34,7 +35,7 @@ type application struct {
 	// wg, is a WaitGroup that waits for all daemons to return.
 	wg sync.WaitGroup
 	// configurations, are the user configurations handled through flags.
-	configurations userConfiguration
+	configurations ctfsmd.UserConfiguration
 	// networkIDreverseProxy, the networkID of the network that the SSH reverse
 	// proxy uses to communicate with the upstream containers.
 	networkIDreverseProxy string
@@ -61,45 +62,6 @@ type application struct {
 	// instrumentation, defines the interface used to interact with the
 	// Prometheus instrumentation.
 	instrumentation prometheus.InstrumentationAPI
-}
-
-// TODO: migrate this data structure to an 'internal' package, so that the 'cli'
-// package can also have access to the configuration struct.
-// userConfiguration, user configurations handled through flags.
-type userConfiguration struct {
-	// debugMode, run the daemon in debug mode. More extensive logging.
-	debugMode bool
-	// sshPort, port in which the SSH Piper will work as an SSH proxy.
-	sshPort string
-	// httpAddr, IP and port in which the HTTP service will be hosted, e.g.
-	// ':4000'.
-	httpAddr string
-	// maxAvailableSess, the size of the channel that handles the available
-	// sessions. scd (session creation daemon) will try to always keep this
-	// amount of available sessions ready to be deployed.
-	maxAvailableSess int
-	// maxActiveSess, the size of the channel that handles the currently active
-	// sessions. srd (session removal daemon) will check periodically to remove
-	// sessions from the activeSessions chan which have exceeded their max.
-	// lifetime.
-	// IMPORTANT: No more sessions can be active than the size of this channel,
-	// otherwise the other daemons will block.
-	maxActiveSess int
-	// lifetimeSess, is the lifetime of a session in minutes. After this time
-	// has elapsed since the activation of the session by a client, the session
-	// will expire and it will be removed by srd (session removal daemon).
-	lifetimeSess int
-	// srdFreq, is the frequency (in min) with which the session removal
-	// daemon (srd) checks if some active sessions have expired.
-	srdFreq int
-	// timeBetweenRequests, is the minimum time in minutes that has to pass
-	// between requests coming from the same user-agent with a particular IP
-	// address, so that the user-agent does not get its request for a new
-	// session denied (429 Too Many Requests).
-	timeBetweenRequests int
-	// noInstrumentation, if true, no instrumentation will be performed in the
-	// application.
-	noInstrumentation bool
 }
 
 // appContexts, defines contexts and context cancelling functions shared

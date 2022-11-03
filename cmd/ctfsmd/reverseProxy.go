@@ -92,7 +92,7 @@ func (app *application) createPiperContainer(name string) (err error) {
 	// this is the port that clients will use to access the upstream-containers
 	// through the SSH reverse proxy.
 	sshPiperProxy.hostConfig.PortBindings = nat.PortMap{
-		nat.Port("2222/tcp"): []nat.PortBinding{{HostIP: "0.0.0.0", HostPort: app.configurations.sshPort}},
+		nat.Port("2222/tcp"): []nat.PortBinding{{HostIP: "0.0.0.0", HostPort: app.configurations.SSHPort}},
 	}
 	// Bind volume to SSH Piper container, for persistent data management.
 	// Bind RSA SSH key of host, so that SSH Piper always works with the same
@@ -126,7 +126,7 @@ func (app *application) createPiperContainer(name string) (err error) {
 	if err != nil {
 		return err
 	}
-	app.infoLog.Printf("SSH piper reverse proxy container was created (ID: %s) on port %s.", app.sshPiperContainerID[:10], app.configurations.sshPort)
+	app.infoLog.Printf("SSH piper reverse proxy container was created (ID: %s) on port %s.", app.sshPiperContainerID[:10], app.configurations.SSHPort)
 
 	return nil
 }

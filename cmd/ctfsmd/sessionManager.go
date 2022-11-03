@@ -16,7 +16,7 @@ func (app *application) initializeSessionManager() {
 	// must be buffered, so that it does not block at the creation of new
 	// sessions that are then immediately sent to the channel. An unbuffered
 	// channel blocks a sender until a receiver is ready.
-	sm.availableSessions = make(chan session, app.configurations.maxAvailableSess)
+	sm.availableSessions = make(chan session, app.configurations.MaxAvailableSess)
 	// Create a channel to receive requests for a session from clients.
 	// The clients will send a clientReq to this channel, so that the
 	// session manager can use the received channel as a channel to respond to
@@ -27,7 +27,7 @@ func (app *application) initializeSessionManager() {
 	// Channel sm.activeSessions stores the sessions that have been delivered
 	// to clients, so that srd can check periodically if the sessions have
 	// exceeded their maximum lifetime, and if so, it terminates the sessions.
-	sm.activeSessions = make(chan session, app.configurations.maxActiveSess)
+	sm.activeSessions = make(chan session, app.configurations.MaxActiveSess)
 	app.sm = sm
 
 }
@@ -61,7 +61,7 @@ func (app *application) smd(ctx context.Context) {
 		}
 		// Check when was the last request from this client.
 		if ok {
-			if timeDiff := time.Since(tlr); timeDiff < time.Duration(app.configurations.timeBetweenRequests)*time.Minute {
+			if timeDiff := time.Since(tlr); timeDiff < time.Duration(app.configurations.TimeBetweenRequests)*time.Minute {
 				app.infoLog.Printf("smd: Not enough time has passed since last request by client %s", req.reqInfo.clientAddr)
 				response := smResponse{}
 				// Send ERR_LAST_REQ = not enough time has passed since last
@@ -155,10 +155,10 @@ func (app *application) srd(ctx context.Context) {
 	// freq, the frequency with which srd will be called to clean the
 	// activeSessions chan, convert the frequency parsed from flags to a
 	// time.Duration value.
-	freq := time.Minute * time.Duration(app.configurations.srdFreq)
+	freq := time.Minute * time.Duration(app.configurations.SRDFreq)
 	// maxLifetime, is the maxLifetime of a session, convert lifetime parsed
 	// from flags to time.Duration value.
-	maxLifetime := time.Minute * time.Duration(app.configurations.lifetimeSess)
+	maxLifetime := time.Minute * time.Duration(app.configurations.LifetimeSess)
 
 	oldestSession := session{}
 	getNewSession := true
