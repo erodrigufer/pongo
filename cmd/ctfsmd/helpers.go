@@ -141,7 +141,8 @@ func (app *application) parseFlags() {
 	flag.Parse()
 }
 
-// stopSession, stops all the containers that form a session and removes all // the session-specific networks created for that session.
+// stopSession, stops all the containers that form a session and removes all
+// the session-specific networks created for that session.
 func (app *application) stopSession(ss session) error {
 	ctx := context.Background()
 
