@@ -66,13 +66,13 @@ func (app *application) setupMonitor() error {
 	// a multiple bigger than 1 of the minimum time between requests from the
 	// same client, so that the monitor does not get a 429 Too Many Requests
 	// response unnecessarily.
-	app.monitor = monitor.NewMonitor(app.infoLog, app.errorLog, time.Duration(app.configurations.timeBetweenRequests)*6*time.Minute)
+	app.monitor = monitor.NewMonitor(app.infoLog, app.errorLog, time.Duration(app.configurations.TimeBetweenRequests)*6*time.Minute)
 
 	if app.outboundIP == "" {
 		return fmt.Errorf("monitor could not be configured due to invalid outboundIP")
 	}
-	serverSessionURL := fmt.Sprintf("http://%s%s/session", app.outboundIP, app.configurations.httpAddr)
-	landingPage := fmt.Sprintf("http://%s%s/", app.outboundIP, app.configurations.httpAddr)
+	serverSessionURL := fmt.Sprintf("http://%s%s/session", app.outboundIP, app.configurations.HTTPAddr)
+	landingPage := fmt.Sprintf("http://%s%s/", app.outboundIP, app.configurations.HTTPAddr)
 
 	// Create the health checks that will be performed.
 	// GET a session successfully.
