@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -23,7 +24,71 @@ var defaultValues = map[string]interface{}{
 }
 
 type Application interface {
-	Run() error
+	Run(ctfsmd.UserConfiguration) error
+}
+
+// fetchConfigValues, fetches all the values that compose a UserConfiguration
+// type which have been collected by viper from either flags, env. variables
+// or from the default values.
+func fetchConfigValues() (ctfsmd.UserConfiguration, error) {
+	var configValues ctfsmd.UserConfiguration
+	// Always check first that the key exists and is being managed by viper.
+	viperKey := "Debug"
+	if viper.IsSet(viperKey) {
+		configValues.DebugMode = viper.GetBool(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key managed by viper.", viperKey)
+	}
+	viperKey = "SSH"
+	if viper.IsSet(viperKey) {
+		configValues.SSHPort = viper.GetString(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key managed by viper.", viperKey)
+	}
+	viperKey = "HTTP"
+	if viper.IsSet(viperKey) {
+		configValues.HTTPAddr = viper.GetString(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key manages by viper.", viperKey)
+	}
+	viperKey = "MaxAvailableSess"
+	if viper.IsSet(viperKey) {
+		configValues.MaxAvailableSess = viper.GetInt(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key manages by viper.", viperKey)
+	}
+	viperKey = "MaxActiveSess"
+	if viper.IsSet(viperKey) {
+		configValues.MaxActiveSess = viper.GetInt(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key manages by viper.", viperKey)
+	}
+	viperKey = "LifetimeSess"
+	if viper.IsSet(viperKey) {
+		configValues.LifetimeSess = viper.GetInt(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key manages by viper.", viperKey)
+	}
+	viperKey = "SRDFreq"
+	if viper.IsSet(viperKey) {
+		configValues.SRDFreq = viper.GetInt(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key manages by viper.", viperKey)
+	}
+	viperKey = "TimeReq"
+	if viper.IsSet(viperKey) {
+		configValues.TimeBetweenRequests = viper.GetInt(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key manages by viper.", viperKey)
+	}
+	viperKey = "NoInstrumentation"
+	if viper.IsSet(viperKey) {
+		configValues.NoInstrumentation = viper.GetBool(viperKey)
+	} else {
+		return configValues, fmt.Errorf("error: '%s' is not a key manages by viper.", viperKey)
+	}
+
+	return configValues, nil
 }
 
 func newRunCmd(app Application) *cobra.Command {
@@ -32,11 +97,17 @@ func newRunCmd(app Application) *cobra.Command {
 		Short: fmt.Sprintf("Runs %s in the local machine.", executableName),
 		Long:  fmt.Sprintf("Runs %s in the local machine.", executableName),
 		// Command does not accept any positional arguments, no arguments other
-		// than flags. If any arguments are submitted, the command will return an
-		// error.
+		// than flags. If any arguments are submitted, the command will return
+		// an error.
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := app.Run(); err != nil {
+			// Fetch all configuration values from viper and pass the config
+			// values to the app being executed.
+			configValues, err := fetchConfigValues()
+			if err != nil {
+				return fmt.Errorf("error: fetching config values from viper: %w", err)
+			}
+			if err := app.Run(configValues); err != nil {
 				return err
 			}
 			return nil

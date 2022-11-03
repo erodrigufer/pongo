@@ -7,6 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
 )
 
 type tui struct{}
@@ -14,10 +16,10 @@ type tui struct{}
 // Run, is the method that fulfils the Application interface from the `cli`
 // package. It runs the application when the `run` command is chosen in the
 // CLI.
-func (t tui) Run() error {
+func (t tui) Run(configValues ctfsmd.UserConfiguration) error {
 	// Initialize object application and perform general configurations.
 	app := new(application)
-	if err := app.setupApplication(); err != nil {
+	if err := app.setupApplication(configValues); err != nil {
 		app.errorLog.Fatal(err)
 	}
 	// Close Docker client, when application returns.

@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
 	"github.com/spf13/viper"
 )
 
@@ -22,7 +23,7 @@ type mockApplication struct{}
 
 var mockApp mockApplication
 
-func (mockApplication) Run() error {
+func (mockApplication) Run(configValues ctfsmd.UserConfiguration) error {
 	return nil
 }
 
