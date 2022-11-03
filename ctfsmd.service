@@ -7,7 +7,7 @@ FailureAction=none
 [Service]
 User=root
 WorkingDirectory=/usr/local/bin/ctfsmd/
-ExecStart=/usr/local/bin/ctfsmd/ctfsmd
+ExecStart=/usr/local/bin/ctfsmd/ctfsmd run
 Restart=no
 
 [Install]
