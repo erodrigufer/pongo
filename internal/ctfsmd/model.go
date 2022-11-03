@@ -3,7 +3,7 @@
 // remain consistent in multiple different packages.
 package ctfsmd
 
-// userConfiguration, user configurations handled through flags or env.
+// UserConfiguration, user configurations handled through flags or env.
 // variables by the cli package using cobra and viper.
 type UserConfiguration struct {
 	// debugMode, run the daemon in debug mode. More extensive logging.
