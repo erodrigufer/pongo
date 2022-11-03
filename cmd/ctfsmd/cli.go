@@ -11,6 +11,9 @@ import (
 
 type tui struct{}
 
+// Run, is the method that fulfils the Application interface from the `cli`
+// package. It runs the application when the `run` command is chosen in the
+// CLI.
 func (t tui) Run() error {
 	// Initialize object application and perform general configurations.
 	app := new(application)
