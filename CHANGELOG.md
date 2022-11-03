@@ -1,4 +1,4 @@
-## v0.1.0
+## v0.1.1
 * Migrate CLI to `cobra` and `viper`.
 * Application can now be controlled by both flags and env. variables.
 
