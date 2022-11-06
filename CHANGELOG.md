@@ -1,3 +1,7 @@
+## v0.1.3
+* Use `crypto/rand` to generate passwords and usernames.
+* Move the functions used to generate random strings to an internal package.
+
 ## v0.1.2
 * Upgrade docker Go client package to next minor version.
 
