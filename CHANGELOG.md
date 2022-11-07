@@ -1,3 +1,6 @@
+## v0.2.0
+* Move all static files (HTML and CSS) needed for the web page to `/var/local/ctfsmd`.
+
 ## v0.1.3
 * Use `crypto/rand` to generate passwords and usernames.
 * Move the functions used to generate random strings to an internal package.

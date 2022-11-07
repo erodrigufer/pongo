@@ -76,7 +76,7 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 	app.images.entrypointImage = "entrypoint"
 
 	// Initialize the HTML templates cache.
-	app.templateCache, err = newTemplateCache("./ui/html/")
+	app.templateCache, err = newTemplateCache("/var/local/ctfsmd/html/")
 	if err != nil {
 		return err
 	}
