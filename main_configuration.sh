@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Reference:
 # 1) The filesystem:
 # https://www.pathname.com/fhs/pub/fhs-2.3.html
@@ -11,13 +12,13 @@ DAEMON_EXECUTABLE_NAME=ctfsmd
 
 # Check:
 # https://askubuntu.com/questions/308045/differences-between-bin-sbin-usr-bin-usr-sbin-usr-local-bin-usr-local
-# Path to copy executable (binary) of daemon
+# Path to copy executable (binary) of daemon.
 INSTALLATION_PATH=/usr/local/bin/${DAEMON_EXECUTABLE_NAME}/
 
 INSTALLATION_FILE=${INSTALLATION_PATH}${DAEMON_EXECUTABLE_NAME}
 
 # Path for static resources (HTML/CSS).
-STATIC_PATH=${INSTALLATION_PATH}/ui
+STATIC_PATH=/var/local/${DAEMON_EXECUTABLE_NAME}
 
 # ---------------------------------------------------------------------
 
@@ -86,6 +87,10 @@ uninstall_daemon(){
 	sudo rm -rf ${INSTALLATION_PATH} || fatal "Program's files could not be removed during un-installation."
 	print_info "De-installation of the daemon finished properly."
 
+	echo "* Removing daemon static files..."
+	sudo rm -rf ${STATIC_PATH} || fatal "Static files could not be removed during un-installation."
+	print_info "Removal of static files finished properly."
+
 	uninstall_systemd
 	return 0
 }
@@ -103,6 +108,17 @@ defer_installation(){
 	exit 1
 }
 
+# Move static files to path where static files will be deployed.
+deploy_static_files(){
+	echo "* Moving static files to ${STATIC_PATH}..."
+	sudo mkdir -p ${STATIC_PATH}
+
+	# This will copy the whole directory with all static files.
+	# (By writing a '/' at the end of the source directory, it will not copy
+	# the directory itself as well).
+	sudo cp -R ./ui/* ${STATIC_PATH} || fatal "Copying static files failed."
+}
+
 # Check if daemon is already installed in the system, otherwise install binary 
 # on installation path.
 install_daemon(){
@@ -116,8 +132,7 @@ install_daemon(){
 	# Copy daemon's executable to installation path.
 	sudo cp ${DAEMON_EXECUTABLE_NAME} ${INSTALLATION_PATH} || fatal "Copying daemon's executable failed."
 
-	# Copy other necessary files to installation path.
-	sudo cp -R ./ui ${INSTALLATION_PATH} || fatal "Copying static files failed."
+	deploy_static_files
 
 	# Change file ownership to root, only root can modify executable, root and 
 	# ${SYSTEM_USER} can execute the file.
