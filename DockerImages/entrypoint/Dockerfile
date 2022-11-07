@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-# Install required programs
+# Install required programs.
 RUN apt-get update
 RUN apt-get install bash
 RUN apt-get install -y openssh-server

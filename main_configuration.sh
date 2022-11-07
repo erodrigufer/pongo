@@ -140,9 +140,9 @@ create_docker_images(){
 
 	# docker pull farmer1992/sshpiperd || fatal "Pulling sshpiperd image failed."
 
-	docker build -t sshpiperd:latest ./DockerImages/sshpiper || fatal "sshpiperd Docker image failed."
+	docker build --tag sshpiperd:latest ./DockerImages/sshpiper || fatal "sshpiperd Docker image failed."
 
-	docker build -t entrypoint:latest ./DockerImages/entrypoint || fatal "entrypoint Docker image failed."
+	docker build --tag entrypoint:latest ./DockerImages/entrypoint || fatal "entrypoint Docker image failed."
 
 }
 

@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"os"
 	"time"
 
 	"github.com/docker/docker/client"
 	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
 	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
+	"github.com/erodrigufer/CTForchestrator/internal/sysutils"
 	semver "github.com/erodrigufer/go-semver"
 )
 
@@ -74,13 +74,6 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 	app.images.sshPiperImage = "sshpiperd"
 	// Docker image used to create the entrypoint container.
 	app.images.entrypointImage = "entrypoint"
-
-	// Create a new and unique random seed, which can be used throughout the
-	// application each time that a random string has to be generated.
-	// For more information, check:
-	// https://www.calhoun.io/creating-random-strings-in-go/
-	app.seededRand = rand.New(
-		rand.NewSource(time.Now().UnixNano()))
 
 	// Initialize the HTML templates cache.
 	app.templateCache, err = newTemplateCache("./ui/html/")
@@ -162,8 +155,15 @@ func (app *application) createSession() (session, error) {
 	passwordLength := 15
 	var newSession session
 	// Create random username and password.
-	newSession.username = app.createRandomUsername(usernameLength)
-	newSession.password = app.createRandomPassword(passwordLength)
+	var err error
+	newSession.username, err = sysutils.NewRandomUsername(usernameLength, charsetUsername)
+	if err != nil {
+		return newSession, fmt.Errorf("error: could not create a new session: %w", err)
+	}
+	newSession.password, err = sysutils.NewRandomPassword(passwordLength, charsetPassword)
+	if err != nil {
+		return newSession, fmt.Errorf("error: could not create a new session: %w", err)
+	}
 	// Time of creation might be used to delete very old sessions in the future.
 	newSession.timeCreated = time.Now()
 
@@ -210,33 +210,6 @@ func (app *application) createSessionNetwork(networkName string) (string, error)
 	}
 	app.debugLog.Printf("Created session network with ID: %s.\n", networkID[:10])
 	return networkID, nil
-}
-
-// createRandomString, returns a random string.
-// Parameters: length is the number of characters of the string that should be
-// returned. charset, is the valid character set from which to generate a
-// random string.
-func (app *application) createRandomString(length int, charset string) string {
-	// Make a slice of length length, in which to store random characters.
-	b := make([]byte, length)
-	for i := range b {
-		// Pick a single character from the character-set through indexing the
-		// string of the character-set. The index is a random number between 0
-		// and the length of the character-set minue 1.
-		b[i] = charset[app.seededRand.Intn(len(charset))]
-	}
-
-	return string(b)
-}
-
-// createRandomPassword, returns a random password of given character length.
-func (app *application) createRandomPassword(length int) string {
-	return app.createRandomString(length, charsetPassword)
-}
-
-//createRandomUsername, returns a random password of the given character length.
-func (app *application) createRandomUsername(length int) string {
-	return app.createRandomString(length, charsetUsername)
 }
 
 // createUser, creates a new user with a given password in an upstream

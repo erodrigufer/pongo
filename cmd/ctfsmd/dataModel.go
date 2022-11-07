@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"math/rand"
 	"net/http"
 	"sync"
 	"time"
@@ -48,9 +47,6 @@ type application struct {
 	// images, Docker images used to create all the containers used in this
 	// application.
 	images images
-	// seededRand, is a *rand.Rand instance seeded from a unique source. It is
-	// a seed for a random number generator.
-	seededRand *rand.Rand
 	// templateCache, cache map with html templates.
 	templateCache map[string]*template.Template
 	// monitor, monitors the health of the application with periodic checks.
