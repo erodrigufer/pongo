@@ -60,11 +60,6 @@ type application struct {
 	instrumentation prometheus.InstrumentationAPI
 }
 
-// appContexts, defines contexts and context cancelling functions shared
-// throughout the application.
-type appContexts struct {
-}
-
 // appSubsystState, stores the state of different subsystems that make up the
 // application, e.g. if there was an error while initializing a subsystem.
 type appSubsystState struct {
@@ -93,12 +88,6 @@ type session struct {
 	username string
 	// password, password used by client to log into session with SSH.
 	password string
-	// networkName, name of the internal session's network.
-	networkName string
-	// networkID, ID of the internal session's network.
-	networkID string
-	// privateNetworkID, ID of the session's private network.
-	privateNetworkID string
 	// containersIDs, is a slice with the containers' IDs of all the
 	// containers that are part of the session.
 	containersIDs []string

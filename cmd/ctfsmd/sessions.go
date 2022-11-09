@@ -3,16 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
-	"log"
-	"os"
 	"time"
 
-	"github.com/docker/docker/client"
-	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
-	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
 	"github.com/erodrigufer/CTForchestrator/internal/sysutils"
-	semver "github.com/erodrigufer/go-semver"
 )
 
 // charsetUsername, valid character-set for generating random usernames.
@@ -25,121 +18,29 @@ const charsetUsername = "abcdefghijklmnopqrstuvwxyz"
 // impossible to connect to the container with SSH. Avoid special characters!
 const charsetPassword = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-// setupApplication, configures the info and error loggers of the application
-// type and it initializes the client that communicates with the Docker daemon.
-// It configure all needed general parameters for the application, e.g. the
-// public port to which clients will connect.
-// Parameters: port, the port to which the clients will connect through SSH.
-func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) error {
-	// Fetch configValues
-	app.configurations = configValues
-
-	// Create a logger for INFO messages, the prefix "INFO" and a tab will be
-	// displayed before each log message. The flags Ldate and Ltime provide the
-	// local date and time.
-	app.infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-
-	// Create an ERROR messages logger, additionally use the Lshortfile flag to
-	// display the file's name and line number for the error.
-	app.errorLog = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	// Create a DEBUG messages logger if the -debugMode flag was set, otherwise
-	// discard all logs. Additionally use the Lshortfile flag to
-	// display the file's name and line number for the debug message.
-	if app.configurations.DebugMode {
-		app.debugLog = log.New(os.Stdout, "DEBUG\t", log.Ldate|log.Ltime|log.Lshortfile)
-	} else {
-		app.debugLog = log.New(io.Discard, "DEBUG\t", log.Ldate|log.Ltime|log.Lshortfile)
-	}
-
-	// Print daemon initialization log, including build revision (if possible).
-	app.infoLog.Print("----------------------------------------------------")
-	app.infoLog.Print("ctfsmd -CTF session manager daemon- is initializing.")
-	buildRev, err := semver.GetRevision()
-	if err == nil {
-		app.buildRev = buildRev
-		app.infoLog.Printf("ctfsmd revision: %s", buildRev)
-	}
-
-	// Initialize Docker daemon client.
-	app.client, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-	if err != nil {
-		return err
-	}
-
-	// The directory in which all the SSH Piper persistent data will be stored.
-	// This directory will be mounted as a volume into the SSH Piper container.
-	app.sshPiperFileSystem = "/tmp/sshpiper"
-	// Docker image used to create SSH Piper container.
-	app.images.sshPiperImage = "sshpiperd"
-	// Docker image used to create the entrypoint container.
-	app.images.entrypointImage = "entrypoint"
-
-	// Initialize the HTML templates cache.
-	app.templateCache, err = newTemplateCache("/var/local/ctfsmd/html/")
-	if err != nil {
-		return err
-	}
-
-	// Start data structures required for session manager daemons (smd).
-	app.initializeSessionManager()
-
-	app.outboundIP, err = getOutboundIP()
-	if err != nil {
-		app.errorLog.Printf("error while retrieving outbound IP of host machine: %v", err)
-	}
-
-	// Create a new system health monitor using its constructor.
-	if app.appState.monitorConfigErr = app.setupMonitor(); app.appState.monitorConfigErr != nil {
-		app.errorLog.Printf("error while configuring the health monitor: %v", err)
-	}
-
-	if !app.configurations.NoInstrumentation {
-		// Expose the Prometheus metrics.
-		app.instrumentation, err = prometheus.ExposeMetrics(app.infoLog, app.errorLog, "localhost:9999")
-		if err != nil {
-			app.errorLog.Printf("error while starting the Prometheus instrumentation: %v", err)
-		}
-	} else {
-		// Do not expose the Prometheus metrics.
-		app.infoLog.Print("prometheus: Running without exposing instrumentation metrics.")
-		// NoOpsInstrumentation() will fulfill the instrumentation interface,
-		// but it will not require any system resources when it is used in the
-		// different instrumentation methods throughout the codebase. Moreover,
-		// the codebase does not have to implement any kind of logic on the
-		// different places where it wants to perform instrumentation, the
-		// interface decides if it needs to collect data or not.
-		app.instrumentation = prometheus.NoOpsInstrumentation()
-	}
-
-	return nil
-
-}
-
 // stopSession, stops all the containers that form a session and removes all
 // the session-specific networks created for that session.
 func (app *application) stopSession(ss session) error {
 	ctx := context.Background()
 
-	// TODO: use a positive value, to have a hard timeout, check documentation.
+	// Check documentation for client.ContainerStop:
+	// "In case the container fails to stop gracefully within a time frame
+	// specified by the timeout argument, it is forcefully terminated (killed).
+	// timeout, err := time.ParseDuration("30s")
+	// if err != nil {
+	// 	return fmt.Errorf("error: parsing time for timeout for stopping container: %w", err)
+	// }
+
+	// TODO: research if this is correct.
+	// https://vsupalov.com/docker-compose-stop-slow/
 	timeout := time.Duration(-1)
 	// Remove all the session-specific containers, which are stored in a slice
 	// of strings with the containers' IDs.
 	for _, containerID := range ss.containersIDs {
 		if err := app.client.ContainerStop(ctx, containerID, &timeout); err != nil {
-			return err
+			return fmt.Errorf("error: unable to stop container (with container ID %s): %w", containerID, err)
 		}
 
-	}
-
-	// Remove the session-specific networks from the host as well.
-	// Remove the internal session's network.
-	if err := app.client.NetworkRemove(ctx, ss.networkID); err != nil {
-		return err
-	}
-	// Remove the session's private network.
-	if err := app.client.NetworkRemove(ctx, ss.privateNetworkID); err != nil {
-		return err
 	}
 
 	return nil
@@ -200,17 +101,21 @@ func (app *application) createSession() (session, error) {
 
 }
 
+// LEGACY: code was used in a previous iteration of this codebase, where
+// sessions had their own internal networks as well with multiple containers
+// inside a session.
+//
 // createSessionNetwork, creates the network that will be used by all
 // containers inside the same session. Parameter: networkName, name for the new
 // network. Output: networkID (string) and error.
-func (app *application) createSessionNetwork(networkName string) (string, error) {
-	networkID, err := app.createNetwork(networkName)
-	if err != nil {
-		return "", err
-	}
-	app.debugLog.Printf("Created session network with ID: %s.\n", networkID[:10])
-	return networkID, nil
-}
+// func (app *application) createSessionNetwork(networkName string) (string, error) {
+// 	networkID, err := app.createNetwork(networkName)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	app.debugLog.Printf("Created session network with ID: %s.\n", networkID[:10])
+// 	return networkID, nil
+// }
 
 // createUser, creates a new user with a given password in an upstream
 // container by running a command inside the upstream container which creates a
