@@ -136,7 +136,18 @@ func (app *application) createPiperContainer(name string) (err error) {
 func (app *application) stopReverseProxy() error {
 	ctx := context.Background()
 
+	// Check documentation for client.ContainerStop:
+	// "In case the container fails to stop gracefully within a time frame
+	// specified by the timeout argument, it is forcefully terminated (killed).
+	// timeout, err := time.ParseDuration("30s")
+	// if err != nil {
+	// 	return fmt.Errorf("error: parsing time for timeout for stopping container: %w", err)
+	// }
+
+	// TODO: research if this is correct.
+	// https://vsupalov.com/docker-compose-stop-slow/
 	timeout := time.Duration(-1)
+
 	if err := app.client.ContainerStop(ctx, app.sshPiperContainerID, &timeout); err != nil {
 		return fmt.Errorf("error stopping SSH Piper container: %w", err)
 	}
