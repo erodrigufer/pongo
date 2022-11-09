@@ -1,3 +1,6 @@
+## v0.2.1
+* Move `cli` to `/internal` (best practices in repository structure).
+
 ## v0.2.0
 * Move all static files (HTML and CSS) needed for the web page to `/var/local/ctfsmd`.
 

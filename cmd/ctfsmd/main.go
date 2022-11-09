@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/erodrigufer/CTForchestrator/cmd/ctfsmd/cli"
+	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd/cli"
 )
 
 func main() {
