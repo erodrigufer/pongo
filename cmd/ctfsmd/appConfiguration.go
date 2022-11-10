@@ -1,17 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
 
-	doc "github.com/erodrigufer/CTForchestrator/internal/docker/build"
+	dock "github.com/erodrigufer/CTForchestrator/internal/docker/build"
 
 	"github.com/docker/docker/client"
 	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
 	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
 	semver "github.com/erodrigufer/go-semver"
 )
+
+// pathEntryImage, path where the Dockerfile and further files needed to build
+// the entrypoint container can be found.
+const pathEntryImage = "/var/local/ctfsmd/image"
 
 // setupApplication, configures the info and error loggers of the application
 // type and it initializes the client that communicates with the Docker daemon.
@@ -52,7 +57,7 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 	// Initialize Docker daemon client.
 	app.client, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		return err
+		return fmt.Errorf("error while initializing a Docker client: %v", err)
 	}
 
 	// The directory in which all the SSH Piper persistent data will be stored.
@@ -66,7 +71,7 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 	// Initialize the HTML templates cache.
 	app.templateCache, err = newTemplateCache("/var/local/ctfsmd/html/")
 	if err != nil {
-		return err
+		return fmt.Errorf("error while creating HTML templates cache: %v", err)
 	}
 
 	// Start data structures required for session manager daemons (smd).
@@ -100,12 +105,10 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 		app.instrumentation = prometheus.NoOpsInstrumentation()
 	}
 
-	err = doc.ImageBuild(app.client, "/var/local/ctfsmd/image")
-	if err == nil {
-		os.Exit(0)
-	} else {
-		app.errorLog.Printf("error building image: %v", err)
-		os.Exit(1)
+	app.infoLog.Print("Building Docker image for upstream container, this step can take up to several minutes.")
+	// Build the Docker image used for the upstream container.
+	if err := dock.ImageBuild(app.client, pathEntryImage, app.images.entrypointImage); err != nil {
+		return fmt.Errorf("error building Docker image for upstream container: %v", err)
 	}
 
 	return nil

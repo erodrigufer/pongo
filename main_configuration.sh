@@ -83,6 +83,15 @@ create_system_user(){
 
 }
 
+# Remove any running containers and networks from the Docker daemon, before
+# continuing with the installation. It is better to have the Docker daemon in 
+# the same initial state.
+resetDockerState(){
+	echo "* Resetting the Docker daemon..."
+	docker stop $(docker ps -q)
+	docker network prune -f
+}
+
 # Remove daemon's executable, all other files and systemd configuration.
 uninstall_daemon(){
 	echo "* Un-installing ${DAEMON_EXECUTABLE_NAME}..."
@@ -151,9 +160,11 @@ install_daemon(){
 		
 }
 
+# Copy the default Docker image used as entrypoint to the folder where the
+# program looks for the image that it should build to use as entrypoint.
 copyDockerImage(){
 	mkdir -p ${DOCKER_IMAGE_PATH}
-	print_info "Copying default Docker image..."
+	echo "* Copying default Docker entrypoint image..."
 	cp ./DockerImages/entrypoint/* ${DOCKER_IMAGE_PATH} || fatal "copying default Docker image for entrypoint"
 }
 
@@ -164,8 +175,6 @@ create_docker_images(){
 	# docker pull farmer1992/sshpiperd || fatal "Pulling sshpiperd image failed."
 
 	docker build --tag sshpiperd:latest ./DockerImages/sshpiper || fatal "sshpiperd Docker image failed."
-
-	docker build --tag entrypoint:latest ./DockerImages/entrypoint || fatal "entrypoint Docker image failed."
 
 }
 
@@ -187,7 +196,8 @@ configure_dockerd(){
 }
 
 preconfiguration_daemon(){
-	
+	resetDockerState
+
 	check_distribution
 
 	create_system_user
