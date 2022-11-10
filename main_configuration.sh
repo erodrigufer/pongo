@@ -20,6 +20,8 @@ INSTALLATION_FILE=${INSTALLATION_PATH}${DAEMON_EXECUTABLE_NAME}
 # Path for static resources (HTML/CSS).
 STATIC_PATH=/var/local/${DAEMON_EXECUTABLE_NAME}
 
+DOCKER_IMAGE_PATH=${STATIC_PATH}/image
+
 # ---------------------------------------------------------------------
 
 # Print an INFO message to the log.
@@ -149,6 +151,12 @@ install_daemon(){
 		
 }
 
+copyDockerImage(){
+	mkdir -p ${DOCKER_IMAGE_PATH}
+	print_info "Copying default Docker image..."
+	cp ./DockerImages/entrypoint/* ${DOCKER_IMAGE_PATH} || fatal "copying default Docker image for entrypoint"
+}
+
 # Pull or create all necessary Docker images for the session manager daemon.
 create_docker_images(){
 	print_info "Pulling and building required Docker images."
@@ -189,6 +197,8 @@ preconfiguration_daemon(){
 	create_docker_images
 
 	configure_dockerd
+
+	copyDockerImage
 
 }
 

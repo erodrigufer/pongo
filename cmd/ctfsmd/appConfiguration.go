@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	doc "github.com/erodrigufer/CTForchestrator/internal/docker/build"
+
 	"github.com/docker/docker/client"
 	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
 	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
@@ -96,6 +98,14 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 		// different places where it wants to perform instrumentation, the
 		// interface decides if it needs to collect data or not.
 		app.instrumentation = prometheus.NoOpsInstrumentation()
+	}
+
+	err = doc.ImageBuild(app.client, "/var/local/ctfsmd/image")
+	if err == nil {
+		os.Exit(0)
+	} else {
+		app.errorLog.Printf("error building image: %v", err)
+		os.Exit(1)
 	}
 
 	return nil
