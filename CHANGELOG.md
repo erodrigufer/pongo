@@ -1,3 +1,7 @@
+## v0.4.0
+* The program now builds the container image for the upstream container using the Docker SDK when initially configuring the program (see `/internal/docker/build`).
+* The internal package used to build docker images also provides a test for the `ImageBuild()` function.
+
 ## v0.3.0
 * Fix issue when stopping sessions. The method stopping the sessions was trying to stop some networks that did not exist within the session model of the current application (they were used in a previous iteration of this application when the sessions were made up of multiple containers and networks).
 
