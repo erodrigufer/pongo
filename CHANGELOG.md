@@ -1,3 +1,6 @@
+## v0.4.1
+* Very minor style improvements in the documentation.
+
 ## v0.4.0
 * The program now builds the container image for the upstream container using the Docker SDK when initially configuring the program (see `/internal/docker/build`).
 * The internal package used to build docker images also provides a test for the `ImageBuild()` function.
