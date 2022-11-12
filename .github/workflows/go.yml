@@ -64,7 +64,7 @@ jobs:
       run: |
         export GOPATH="$HOME/go/"
         export PATH=$PATH:$GOPATH/bin
-        go install github.com/rakyll/gotest
+        go get -u github.com/rakyll/gotest
 
     - name: Run all tests
       run: gotest -v ./...
