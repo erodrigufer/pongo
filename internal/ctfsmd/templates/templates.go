@@ -1,4 +1,4 @@
-package main
+package templates
 
 import (
 	"html/template"
@@ -7,8 +7,8 @@ import (
 	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
 )
 
-// templateData, holds the dynamic data passed to the HTML templates.
-type templateData struct {
+// TemplateData, holds the dynamic data passed to the HTML templates.
+type TemplateData struct {
 	// CurrentYear, displays the current year in the footer of the page.
 	CurrentYear int
 	// BuildRev, revision from which executable was built. If revision is
@@ -29,9 +29,9 @@ type templateData struct {
 	HealthCheckResults []monitor.HealthCheckResult
 }
 
-// newTemplateCache, create a templates cache from a directory dir.
+// NewTemplateCache, create a templates cache from a directory dir.
 // The template cache stores the rendered HTML pages in a map.
-func newTemplateCache(dir string) (map[string]*template.Template, error) {
+func NewTemplateCache(dir string) (map[string]*template.Template, error) {
 	// Initialize a new map to act as the cache
 	cache := map[string]*template.Template{}
 	// Use the filepath.Glob function to get a slice of all filepaths with

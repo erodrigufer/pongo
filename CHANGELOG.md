@@ -1,3 +1,6 @@
+## v0.4.2
+* Move the type definitions and the function to create a new templates cache to an internal package.
+
 ## v0.4.1
 * Very minor style improvements in the documentation.
 
