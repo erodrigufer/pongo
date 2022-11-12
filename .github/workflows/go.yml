@@ -67,6 +67,9 @@ jobs:
         go get -u github.com/rakyll/gotest
 
     - name: Run all tests
-      run: gotest -v ./...
+      run: |
+        export GOPATH="$HOME/go/"
+        export PATH=$PATH:$GOPATH/bin
+        gotest -v ./...
 
 
