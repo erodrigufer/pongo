@@ -60,11 +60,13 @@ jobs:
     - name: Check version
       run: go version
 
-    - name: Run all tests
+    - name: Setup gotest
       run: |
         export GOPATH="$HOME/go/"
         export PATH=$PATH:$GOPATH/bin
-        go get -u github.com/rakyll/gotest
-        gotest -v ./...
+        go install github.com/rakyll/gotest
+
+    - name: Run all tests
+      run: gotest -v ./...
 
 
