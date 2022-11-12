@@ -13,6 +13,7 @@ import (
 	"github.com/bmizerany/pat"
 
 	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
+	dyntemplate "github.com/erodrigufer/CTForchestrator/internal/ctfsmd/templates"
 )
 
 // declareHTTPServer, declares and configures an HTTP server.
@@ -100,7 +101,7 @@ func (app *application) routes() http.Handler {
 
 // index, handler used to render the main landing page.
 func (app *application) index(w http.ResponseWriter, r *http.Request) {
-	dynamicData := &templateData{}
+	dynamicData := &dyntemplate.TemplateData{}
 	// Render page.
 	app.render(w, r, "main.page.tmpl", dynamicData)
 
@@ -122,7 +123,7 @@ func (app *application) healthcheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dynamicData := &templateData{}
+	dynamicData := &dyntemplate.TemplateData{}
 	// Pass the health check results to the template's dynamic data.
 	dynamicData.HealthCheckResults = response.HealthChecksResults
 	// Render page.
@@ -151,7 +152,7 @@ func (app *application) sessionFrontend(w http.ResponseWriter, r *http.Request) 
 			app.infoLog.Print(err)
 			// Send a 429 Too many requests HTTP error.
 			w.WriteHeader(429)
-			app.render(w, r, "timeRequestError.page.tmpl", &templateData{})
+			app.render(w, r, "timeRequestError.page.tmpl", &dyntemplate.TemplateData{})
 			return
 		}
 		app.serverError(w, err)
@@ -161,7 +162,7 @@ func (app *application) sessionFrontend(w http.ResponseWriter, r *http.Request) 
 	}
 	app.infoLog.Printf("Session (%s) delivered to %s.", ss.name, r.RemoteAddr)
 
-	dynamicData := &templateData{
+	dynamicData := &dyntemplate.TemplateData{
 		Username: ss.username,
 		Password: ss.password,
 	}
@@ -206,10 +207,10 @@ func getIP(unparsed string) (string, error) {
 
 // addDefaultData, default data is automatically added to the dynamic data every
 // time a template is rendered. This dynamic data is then passed to app.render.
-func (app *application) addDefaultData(td *templateData) *templateData {
-	// If pointer is nil, create a new instance of templateData.
+func (app *application) addDefaultData(td *dyntemplate.TemplateData) *dyntemplate.TemplateData {
+	// If pointer is nil, create a new instance of dyntemplate.TemplateData.
 	if td == nil {
-		td = &templateData{}
+		td = &dyntemplate.TemplateData{}
 	}
 	td.CurrentYear = time.Now().Year()
 	td.BuildRev = app.buildRev
@@ -235,7 +236,7 @@ func (app *application) addDefaultData(td *templateData) *templateData {
 // page name (like 'index.page.tmpl') used as input. If no entry exists in the
 // cache with the provided name, call the serverError helper method. Also
 // provide the dynamicData to the templates through a parameter.
-func (app *application) render(w http.ResponseWriter, r *http.Request, name string, dynamicData *templateData) {
+func (app *application) render(w http.ResponseWriter, r *http.Request, name string, dynamicData *dyntemplate.TemplateData) {
 	// Check if the template exists in the template cache map.
 	ts, ok := app.templateCache[name]
 	// The object did not exist in the cache map.

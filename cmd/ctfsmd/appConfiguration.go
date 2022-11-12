@@ -10,6 +10,7 @@ import (
 
 	"github.com/docker/docker/client"
 	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
+	dyntemplate "github.com/erodrigufer/CTForchestrator/internal/ctfsmd/templates"
 	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
 	semver "github.com/erodrigufer/go-semver"
 )
@@ -69,7 +70,7 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 	app.images.entrypointImage = "entrypoint"
 
 	// Initialize the HTML templates cache.
-	app.templateCache, err = newTemplateCache("/var/local/ctfsmd/html/")
+	app.templateCache, err = dyntemplate.NewTemplateCache("/var/local/ctfsmd/html/")
 	if err != nil {
 		return fmt.Errorf("error while creating HTML templates cache: %v", err)
 	}
