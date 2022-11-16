@@ -3,17 +3,19 @@ const copyIcon = `<svg aria-hidden="true" data-testid="geist-icon" fill="none" h
 function copyCodeBlock(event) {
 	const copyButton = event.currentTarget
 	const codeBlock = copyButton.parentElement.querySelector("pre.ssh")
+	// Remove any white spaces before or after a string.
 	const code = codeBlock.innerText.trim()
-	// remove "$ " prompt at start of lines in code
+	// Remove "$ " prompt at start of lines in code.
 	const strippedCode = code.replace(/^[\s]?\$\s+/gm, "")
 	window.navigator.clipboard.writeText(strippedCode)
 
-	// change the button text temporarily
+	// Change the button text temporarily.
 	copyButton.textContent = "Copied!"
+	// After 3 seconds, change back to the copy icon.
 	setTimeout(() => copyButton.innerHTML = copyIcon, 3000)
 }
 
-// register event listeners for copy buttons
+// Register event listener for copy button.
 const copyButtons = document.querySelectorAll("button.copy")
 	copyButtons.forEach((btn) => {
 		btn.addEventListener("click", copyCodeBlock)
