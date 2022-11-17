@@ -14,6 +14,7 @@ import (
 
 	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
 	dyntemplate "github.com/erodrigufer/CTForchestrator/internal/ctfsmd/templates"
+	"github.com/erodrigufer/CTForchestrator/internal/http/middleware/limiter"
 )
 
 // declareHTTPServer, declares and configures an HTTP server.
@@ -72,8 +73,15 @@ func (app *application) routes() http.Handler {
 	// Create routing for healthcheck function to check uptime/status of server.
 	mux.Get("/healthcheck", http.HandlerFunc(app.healthcheck))
 
+	sessionLimited, err := limiter.NewRateLimiterMiddleware(1, "5m", http.HandlerFunc(app.sessionFrontend))
+	if err != nil {
+		// TODO: send error code to client.
+		// app.serverError(w, fmt.Errorf("Error received from monitord, could not retrieve monitor information."))
+		app.errorLog.Fatalf("could not create rate limiter for sessions: %v", err)
+	}
+
 	// Create routing to request a session.
-	mux.Get("/session", http.HandlerFunc(app.sessionFrontend))
+	mux.Get("/session", sessionLimited)
 
 	// Create a handler/fileServer for all files in the static directory
 	// Type Dir implements the interface required by FileServer and makes the
