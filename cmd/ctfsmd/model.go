@@ -121,15 +121,6 @@ type clientReq struct {
 	// respCh, is the channel where the client expects to receive an answer back
 	// from the session manager daemon (smd) with a new session.
 	respCh chan smResponse
-	// reqInfo, extra information from the client for smd with each request.
-	reqInfo reqInfo
-}
-
-// reqInfo, contains extra information that the client shares with smd with each
-// request, for instance, the IP address of the client performing the request.
-type reqInfo struct {
-	// clientAddr, IP address of client sending request.
-	clientAddr string
 }
 
 // ERR_LAST_REQ, error code used to identify an error received when a user tries

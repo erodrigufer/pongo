@@ -32,7 +32,13 @@ func NewRateLimiterMiddleware(limit int64, period string, extHandler http.Handle
 	rateLimiter := limiter.New(store, rate)
 
 	// Create a new middleware with the limiter instance.
-	middleware := mhttp.NewMiddleware(rateLimiter)
+	// middleware := mhttp.NewMiddleware(rateLimiter)
+	middleware := mhttp.Middleware{
+		Limiter: rateLimiter,
+		OnError: mhttp.DefaultErrorHandler,
+		OnLimitReached: 
+	}
+
 
 	// TODO: remove this comments when the application works, they are here just
 	// as a reference on how to use the Handler method within an HTTP server.

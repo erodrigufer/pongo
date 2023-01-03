@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -154,15 +153,6 @@ func (app *application) sessionFrontend(w http.ResponseWriter, r *http.Request) 
 	defer cancel()
 	ss, err := app.requestSession(ctx, r)
 	if err != nil {
-		// Check if the client tried to get a new session in an amount of time
-		// shorter than the minimum permitted between requests.
-		if errors.Is(err, ERR_LAST_REQ) {
-			app.infoLog.Print(err)
-			// Send a 429 Too many requests HTTP error.
-			w.WriteHeader(429)
-			app.render(w, r, "timeRequestError.page.tmpl", &dyntemplate.TemplateData{})
-			return
-		}
 		app.serverError(w, err)
 		// An error occured, return from the handler to not send more data to
 		// the client.

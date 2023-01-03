@@ -19,21 +19,9 @@ func (app *application) requestSession(ctx context.Context, r *http.Request) (se
 	// capacity left in the channel.
 	responseCh := make(chan smResponse, 1)
 
-	// Parse the IP of the client, to send it to smd.
-	clientIP, err := getIP(r.RemoteAddr)
-	if err != nil {
-		app.errorLog.Print(err)
-		// If parsing fails, set clientIP to "" to not store anything in the
-		// daemon (smd) handling the sessions.
-		// TODO: check for "" in smd as well.
-		clientIP = ""
-	}
 	// Declare session request that will be sent to smd.
 	sessionReq := clientReq{
 		respCh: responseCh,
-		reqInfo: reqInfo{
-			clientAddr: clientIP,
-		},
 	}
 
 	// Send clientReq to session manager to request a new session.
@@ -51,7 +39,6 @@ func (app *application) requestSession(ctx context.Context, r *http.Request) (se
 
 	var smResponse smResponse
 	select {
-
 	// Blocks until a value is available (a value sent by the session manager).
 	case smResponse = <-sessionReq.respCh:
 		break
@@ -65,7 +52,7 @@ func (app *application) requestSession(ctx context.Context, r *http.Request) (se
 	}
 	// Check if the session manager is notifying of an error, if so return the
 	// error.
-	err = smResponse.errors
+	err := smResponse.errors
 	if err != nil {
 		err := fmt.Errorf("client did not receive a valid session from smd: %w", err)
 		return smResponse.session, err

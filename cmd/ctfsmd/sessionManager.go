@@ -36,10 +36,6 @@ func (app *application) initializeSessionManager() {
 // goroutine, and is in charge of handling the requests for new sessions from
 // all clients.
 func (app *application) smd(ctx context.Context) {
-	// timeLastRequest maps the IP of a client making a request with the time
-	// in which it made its last request. This map is used to block clients from
-	// performing too many requests in a very small amount of time.
-	timeLastRequest := make(map[string]time.Time)
 	for {
 		var req clientReq
 		select {
@@ -54,28 +50,6 @@ func (app *application) smd(ctx context.Context) {
 			// Daemon terminates.
 			return
 		}
-
-		tlr, ok := timeLastRequest[req.reqInfo.clientAddr]
-		if !ok {
-			app.infoLog.Printf("smd: client (%s) is establishing a connection for the first time.", req.reqInfo.clientAddr)
-		}
-		// Check when was the last request from this client.
-		if ok {
-			if timeDiff := time.Since(tlr); timeDiff < time.Duration(app.configurations.TimeBetweenRequests)*time.Minute {
-				app.infoLog.Printf("smd: Not enough time has passed since last request by client %s", req.reqInfo.clientAddr)
-				response := smResponse{}
-				// Send ERR_LAST_REQ = not enough time has passed since last
-				// request, so that the client can identify the exact error
-				// that took place.
-				response.errors = ERR_LAST_REQ
-				req.respCh <- response
-				continue // Loop back to the beginning, wait for next request.
-			}
-		}
-		// The last request was before the minimum time between request, update
-		// time of last request.
-		timeLastRequest[req.reqInfo.clientAddr] = time.Now()
-		app.infoLog.Printf("smd: Req from %s at time: %v.", req.reqInfo.clientAddr, timeLastRequest[req.reqInfo.clientAddr])
 
 		// Create a struct of type smResponse (session manager response) to
 		// send a response back to the client.
