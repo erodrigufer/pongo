@@ -9,7 +9,7 @@ require (
 	github.com/erodrigufer/go-semver v0.1.1
 	github.com/prometheus/client_golang v1.13.0
 	github.com/spf13/cobra v1.6.0
-	github.com/spf13/viper v1.13.0
+	github.com/spf13/viper v1.14.0
 	github.com/subosito/gotenv v1.4.1
 	github.com/urfave/negroni v1.0.0
 )
@@ -53,7 +53,6 @@ require (
 	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
-	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
