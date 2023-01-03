@@ -1,3 +1,6 @@
+## v0.4.3
+* Update docker and go-semver versions in go.mod and go.sum files. 
+
 ## v0.4.2
 * Move the type definitions and the function to create a new templates cache to an internal package.
 
