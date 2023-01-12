@@ -10,7 +10,7 @@ require (
 	github.com/prometheus/client_golang v1.13.0
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/viper v1.13.0
-	github.com/subosito/gotenv v1.4.1
+	github.com/subosito/gotenv v1.4.2
 	github.com/urfave/negroni v1.0.0
 )
 
