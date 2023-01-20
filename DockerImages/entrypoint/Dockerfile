@@ -13,7 +13,6 @@ RUN apt-get install -y curl
 
 # Create a group and user.
 ARG user=admin
-ARG pass=lbecgyjsnei3mu7yp1hw
 ARG group=admin
 ARG home=/home/$user
 RUN addgroup $group
@@ -24,11 +23,9 @@ RUN adduser \
     --ingroup $group \
     $user
 
-# Set user password.
-RUN echo $user':'$pass | chpasswd
-
 # Prepare entrypoint script.
 COPY entrypoint.sh /tmp/entrypoint.sh
+# Make entrypoint script executable.
 RUN chmod 500 "/tmp/entrypoint.sh"
 
 # Set working directory.
