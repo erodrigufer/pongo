@@ -1,3 +1,6 @@
+## v0.5.1
+* Improve styling of README file.
+
 ## v0.5.0
 * It is not possible any more to access the `admin` account from within the entrypoint Docker container.
 
