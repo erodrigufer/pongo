@@ -175,7 +175,7 @@ func TestExecute(t *testing.T) {
 		[]string{"run"},
 		map[string]interface{}{
 			"SSH": "5"},
-		map[string]interface{}{"CTFSMD_SSH": "5"},
+		map[string]interface{}{"PONGO_SSH": "5"},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
@@ -185,7 +185,7 @@ func TestExecute(t *testing.T) {
 		[]string{"run"},
 		map[string]interface{}{
 			"HTTP": ":78"},
-		map[string]interface{}{"CTFSMD_HTTP": ":78"},
+		map[string]interface{}{"PONGO_HTTP": ":78"},
 		tests)
 	if err != nil {
 		t.Fatalf("error appending test: %v", err)
