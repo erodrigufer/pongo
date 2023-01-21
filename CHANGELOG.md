@@ -1,3 +1,6 @@
+## v0.5.0
+* It is not possible any more to access the `admin` account from within the entrypoint Docker container.
+
 ## v0.4.3
 * Update docker and go-semver versions in go.mod and go.sum files. 
 
