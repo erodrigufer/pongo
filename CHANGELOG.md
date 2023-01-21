@@ -1,3 +1,7 @@
+## v0.6.1
+* Fix dependabot security alert regarding `containerd` dependency.
+* Bump docker version in go.mod
+
 ## v0.6.0
 * Rename the project/program to `pongo`
 
