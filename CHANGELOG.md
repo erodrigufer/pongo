@@ -1,3 +1,6 @@
+## v0.6.0
+* Rename the project/program to `pongo`
+
 ## v0.5.1
 * Improve styling of README file.
 

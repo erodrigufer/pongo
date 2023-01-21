@@ -1,7 +1,7 @@
-// ctfsmd, defines objects and methods shared throughout this project. For
+// pongo, defines objects and methods shared throughout this project. For
 // instance, a general data model (e.g. configuration parameters) which should
 // remain consistent in multiple different packages.
-package ctfsmd
+package pongo
 
 // UserConfiguration, user configurations handled through flags or env.
 // variables by the cli package using cobra and viper.

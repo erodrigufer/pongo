@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/docker/docker/client"
-	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
-	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
-	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
+	monitor "github.com/erodrigufer/pongo/internal/APIMonitor"
+	"github.com/erodrigufer/pongo/internal/pongo"
+	prometheus "github.com/erodrigufer/pongo/internal/prometheus"
 )
 
 // application, type used for dependency injection and to avoid using globals.
@@ -34,7 +34,7 @@ type application struct {
 	// wg, is a WaitGroup that waits for all daemons to return.
 	wg sync.WaitGroup
 	// configurations, are the user configurations handled through flags.
-	configurations ctfsmd.UserConfiguration
+	configurations pongo.UserConfiguration
 	// networkIDreverseProxy, the networkID of the network that the SSH reverse
 	// proxy uses to communicate with the upstream containers.
 	networkIDreverseProxy string

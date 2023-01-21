@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
+	prometheus "github.com/erodrigufer/pongo/internal/prometheus"
 	"github.com/urfave/negroni"
 )
 

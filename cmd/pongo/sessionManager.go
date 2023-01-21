@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
+	prometheus "github.com/erodrigufer/pongo/internal/prometheus"
 )
 
 // initializeSessionManager, this method creates and populates all the channels

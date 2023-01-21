@@ -7,7 +7,7 @@ import (
 	"github.com/subosito/gotenv"
 )
 
-var executableName string = "ctfsmd"
+var executableName string = "pongo"
 
 var rootCmdLongDescr string = fmt.Sprintf(`%s is a dynamic container manager for capture the flag (CTF) events.
    

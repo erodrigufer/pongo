@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"path/filepath"
 
-	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
+	monitor "github.com/erodrigufer/pongo/internal/APIMonitor"
 )
 
 // TemplateData, holds the dynamic data passed to the HTML templates.

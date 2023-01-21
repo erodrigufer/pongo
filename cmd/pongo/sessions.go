@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/erodrigufer/CTForchestrator/internal/sysutils"
+	"github.com/erodrigufer/pongo/internal/sysutils"
 )
 
 // charsetUsername, valid character-set for generating random usernames.

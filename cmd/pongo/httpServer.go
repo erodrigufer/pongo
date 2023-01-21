@@ -12,8 +12,8 @@ import (
 
 	"github.com/bmizerany/pat"
 
-	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
-	dyntemplate "github.com/erodrigufer/CTForchestrator/internal/ctfsmd/templates"
+	monitor "github.com/erodrigufer/pongo/internal/APIMonitor"
+	dyntemplate "github.com/erodrigufer/pongo/internal/pongo/templates"
 )
 
 // declareHTTPServer, declares and configures an HTTP server.
@@ -83,7 +83,7 @@ func (app *application) routes() http.Handler {
 	// it will serve files relative to this path. Nonetheless, a security
 	// concern is that symlinks that point outside the 'jail' can also be
 	// followed (check documentation of type Dir).
-	fileServer := http.FileServer(http.Dir("/var/local/ctfsmd/static/"))
+	fileServer := http.FileServer(http.Dir("/var/local/pongo/static/"))
 
 	// Make the fileServer the handler for all URLs starting with '/static'.
 	// http.StripPrefix, will create a new http.Handler that first strips the

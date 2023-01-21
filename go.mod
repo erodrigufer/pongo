@@ -1,4 +1,4 @@
-module github.com/erodrigufer/CTForchestrator
+module github.com/erodrigufer/pongo
 
 go 1.19
 
