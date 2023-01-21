@@ -68,5 +68,7 @@ $ journalctl -f -t ctfsmd
 ### Important considerations
 * If a Docker daemon is already using part of the IP range declared on the new `/etc/docker/daemon.json` file, there will be an unsolvable conflict which will prevent the Docker daemon from correctly running.
 * In order to fix this:
+	
 	a. Run `route -n` and check the current routing table in the system. If some current Docker containers are assigned to the IPs that you want to use, there will be a problem.
+	
 	b. Change the IP ranges declared on `/etc/docker/daemon.json`, so that they do not collide with the IP ranges of other already running Docker containers, as discovered in the previous step.
