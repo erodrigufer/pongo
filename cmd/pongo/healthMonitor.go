@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	monitor "github.com/erodrigufer/CTForchestrator/internal/APIMonitor"
+	monitor "github.com/erodrigufer/pongo/internal/APIMonitor"
 )
 
 // startMonitord, starts all the daemons required to monitor the health of the

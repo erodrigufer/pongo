@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
+	"github.com/erodrigufer/pongo/internal/pongo"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -24,14 +24,14 @@ var defaultValues = map[string]interface{}{
 }
 
 type Application interface {
-	Run(ctfsmd.UserConfiguration) error
+	Run(pongo.UserConfiguration) error
 }
 
 // fetchConfigValues, fetches all the values that compose a UserConfiguration
 // type which have been collected by viper from either flags, env. variables
 // or from the default values.
-func fetchConfigValues() (ctfsmd.UserConfiguration, error) {
-	var configValues ctfsmd.UserConfiguration
+func fetchConfigValues() (pongo.UserConfiguration, error) {
+	var configValues pongo.UserConfiguration
 	// Always check first that the key exists and is being managed by viper.
 	viperKey := "Debug"
 	if viper.IsSet(viperKey) {

@@ -6,25 +6,25 @@ import (
 	"log"
 	"os"
 
-	dock "github.com/erodrigufer/CTForchestrator/internal/docker/build"
+	dock "github.com/erodrigufer/pongo/internal/docker/build"
 
 	"github.com/docker/docker/client"
-	"github.com/erodrigufer/CTForchestrator/internal/ctfsmd"
-	dyntemplate "github.com/erodrigufer/CTForchestrator/internal/ctfsmd/templates"
-	prometheus "github.com/erodrigufer/CTForchestrator/internal/prometheus"
 	semver "github.com/erodrigufer/go-semver"
+	"github.com/erodrigufer/pongo/internal/pongo"
+	dyntemplate "github.com/erodrigufer/pongo/internal/pongo/templates"
+	prometheus "github.com/erodrigufer/pongo/internal/prometheus"
 )
 
 // pathEntryImage, path where the Dockerfile and further files needed to build
 // the entrypoint container can be found.
-const pathEntryImage = "/var/local/ctfsmd/image"
+const pathEntryImage = "/var/local/pongo/image"
 
 // setupApplication, configures the info and error loggers of the application
 // type and it initializes the client that communicates with the Docker daemon.
 // It configure all needed general parameters for the application, e.g. the
 // public port to which clients will connect.
 // Parameters: port, the port to which the clients will connect through SSH.
-func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) error {
+func (app *application) setupApplication(configValues pongo.UserConfiguration) error {
 	// Fetch configValues
 	app.configurations = configValues
 
@@ -48,11 +48,11 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 
 	// Print daemon initialization log, including build revision (if possible).
 	app.infoLog.Print("----------------------------------------------------")
-	app.infoLog.Print("ctfsmd -CTF session manager daemon- is initializing.")
+	app.infoLog.Print("pongo -CTF session manager daemon- is initializing.")
 	buildRev, err := semver.GetRevision()
 	if err == nil {
 		app.buildRev = buildRev
-		app.infoLog.Printf("ctfsmd revision: %s", buildRev)
+		app.infoLog.Printf("pongo revision: %s", buildRev)
 	}
 
 	// Initialize Docker daemon client.
@@ -70,7 +70,7 @@ func (app *application) setupApplication(configValues ctfsmd.UserConfiguration) 
 	app.images.entrypointImage = "entrypoint"
 
 	// Initialize the HTML templates cache.
-	app.templateCache, err = dyntemplate.NewTemplateCache("/var/local/ctfsmd/html/")
+	app.templateCache, err = dyntemplate.NewTemplateCache("/var/local/pongo/html/")
 	if err != nil {
 		return fmt.Errorf("error while creating HTML templates cache: %v", err)
 	}

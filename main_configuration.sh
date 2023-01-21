@@ -6,9 +6,9 @@
 # 2) /bin, /sbin, /usr/bin, /usr/local/bin, ...
 # https://askubuntu.com/questions/308045/differences-between-bin-sbin-usr-bin-usr-sbin-usr-local-bin-usr-local
 
-SYSTEM_USER=ctfsmd
+SYSTEM_USER=pongo
 
-DAEMON_EXECUTABLE_NAME=ctfsmd
+DAEMON_EXECUTABLE_NAME=pongo
 
 # Check:
 # https://askubuntu.com/questions/308045/differences-between-bin-sbin-usr-bin-usr-sbin-usr-local-bin-usr-local
@@ -108,7 +108,7 @@ uninstall_daemon(){
 
 # Build the daemon.
 build_daemon(){
-	go build -o ./${DAEMON_EXECUTABLE_NAME} ./cmd/ctfsmd || fatal "Daemon's build failed."
+	go build -o ./${DAEMON_EXECUTABLE_NAME} ./cmd/pongo || fatal "Daemon's build failed."
 }
 
 # Execute this function if installation fails, functions removes all 
@@ -216,21 +216,21 @@ preconfiguration_daemon(){
 configure_systemd(){
 	echo "* Configuring service as a daemon..."
 	# Copy service file to systemd folder.
-	sudo cp ./ctfsmd.service /etc/systemd/system || fail "Unable to copy systemd service unit file."
-	sudo chmod 644 /etc/systemd/system/ctfsmd.service || fail "Unable to chmod of service unit file."
+	sudo cp ./pongo.service /etc/systemd/system || fail "Unable to copy systemd service unit file."
+	sudo chmod 644 /etc/systemd/system/pongo.service || fail "Unable to chmod of service unit file."
 	# Notify systemd of the new daemon and enable it.
 	sudo systemctl daemon-reload || fail "Unable to reload systemd daemons."
-	sudo systemctl enable ctfsmd || fail "Error while enabling ctfsmd."
-	print_info "ctfsmd was correctly configured and enabled. Start the daemon with 'systemctl start ctfsmd'"
+	sudo systemctl enable pongo || fail "Error while enabling pongo."
+	print_info "pongo was correctly configured and enabled. Start the daemon with 'systemctl start pongo'"
 }
 
 # Uninstall any changes or configurations for systemd.
 uninstall_systemd(){
-	echo "* Removing ctfsmd systemd configuration... "
+	echo "* Removing pongo systemd configuration... "
 	# If the daemon is running, stop it first.
-	sudo systemctl stop ctfsmd
-	# This command properly removes ctfsmd from the systemd configuration.
-	sudo systemctl disable ctfsmd || error_log "Error while removing ctfsmd systemd configuration."
+	sudo systemctl stop pongo
+	# This command properly removes pongo from the systemd configuration.
+	sudo systemctl disable pongo || error_log "Error while removing pongo systemd configuration."
 
 	sudo systemctl daemon-reload || error_log "Error while reloading the daemon configuration (systemd)"
 	sudo systemctl reset-failed || error_log "Error (reset-failed command systemd)"

@@ -1,13 +1,13 @@
 [Unit]
-Description=CTF Session Manager Daemon
+Description=pongo -- CTF Session Manager Daemon
 After=network.target
 DefaultDependencies=yes
 FailureAction=none
 
 [Service]
 User=root
-WorkingDirectory=/usr/local/bin/ctfsmd/
-ExecStart=/usr/local/bin/ctfsmd/ctfsmd run
+WorkingDirectory=/usr/local/bin/pongo/
+ExecStart=/usr/local/bin/pongo/pongo run
 Restart=no
 
 [Install]

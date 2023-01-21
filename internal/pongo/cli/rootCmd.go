@@ -7,7 +7,7 @@ import (
 	"github.com/subosito/gotenv"
 )
 
-var executableName string = "ctfsmd"
+var executableName string = "pongo"
 
 var rootCmdLongDescr string = fmt.Sprintf(`%s is a dynamic container manager for capture the flag (CTF) events.
    
@@ -28,7 +28,7 @@ func Execute(app Application) error {
 		// TODO: handle the error case for gotenv (no file and so on) properly.
 		// gotenv returns an error, when there is no .env file, or when the
 		// env. variables are poorly defined, e.g.
-		// 'CTFSMD_NOINTRUMENTATION true', here the '=' is missing.
+		// 'PONGO_NOINTRUMENTATION true', here the '=' is missing.
 		fmt.Printf("error loading env. variables: %v\n", err)
 	}
 	// error: open .env-is-not-exist: no such file or directory
