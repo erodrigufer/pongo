@@ -28,9 +28,9 @@ require (
 	github.com/pockost/sshpipe-k8s-lib v0.0.3
 	github.com/tg123/remotesigner v0.0.0-20210928104451-7c20285909d1
 	github.com/tg123/sshkey v0.0.0-20201202190454-3bb356f89f1f
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
-	golang.org/x/sys v0.0.0-20211003122950-b1ebd4e1001c // indirect
+	golang.org/x/crypto v0.14.0
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/grpc v1.41.0
 	google.golang.org/protobuf v1.27.1
@@ -59,8 +59,8 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f // indirect
-	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/term v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	google.golang.org/genproto v0.0.0-20211001223012-bfb93cce50d9 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
